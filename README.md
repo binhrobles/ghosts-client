@@ -1,3 +1,11 @@
+# Ghosts Client
+
+Because memories live where they were made.
+
+Using [react-mapbox-gl](https://github.com/alex3165/react-mapbox-gl/blob/master/docs/API.md) for Mapbox React components
+
+# From create-react-app
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
