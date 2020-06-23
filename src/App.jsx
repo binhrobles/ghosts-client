@@ -9,8 +9,12 @@ const Map = ReactMapboxGl({
 
 function App() {
   const [points, updatePoints] = React.useState([]);
-  const createMarker = (_, event) => {
+  const onMapClicked = (_, event) => {
     updatePoints((prev) => prev.concat(event.lngLat));
+  };
+
+  const onFeatureClicked = (event) => {
+    console.log(`feature ${event.feature.properties.idx} clicked`);
   };
 
   return (
@@ -21,12 +25,17 @@ function App() {
           height: '100vh',
           width: '100vw',
         }}
-        onClick={createMarker}
+        onClick={onMapClicked}
       >
         <Geocoder />
         <Layer type="circle">
-          {points.map((point) => (
-            <Feature key={point} coordinates={[point.lng, point.lat]} />
+          {points.map((point, idx) => (
+            <Feature
+              key={point}
+              properties={{ idx }}
+              coordinates={[point.lng, point.lat]}
+              onClick={onFeatureClicked}
+            />
           ))}
         </Layer>
       </Map>
