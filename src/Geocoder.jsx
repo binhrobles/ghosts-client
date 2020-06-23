@@ -5,7 +5,7 @@ import * as MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import config from './config';
 
 const Geocoder = () => {
-  const map = React.useContext(MapContext.Consumer);
+  const map = React.useContext(MapContext);
 
   React.useEffect(() => {
     map.addControl(

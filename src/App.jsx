@@ -3,10 +3,15 @@ import ReactMapboxGl, { Layer, Feature } from 'react-mapbox-gl';
 import Geocoder from './Geocoder';
 import config from './config';
 
+const Map = ReactMapboxGl({
+  accessToken: config.mapboxPublicAccessToken,
+});
+
 function App() {
-  const Map = ReactMapboxGl({
-    accessToken: config.mapboxPublicAccessToken,
-  });
+  const [points, updatePoints] = React.useState([]);
+  const createMarker = (_, event) => {
+    updatePoints((prev) => prev.concat(event.lngLat));
+  };
 
   return (
     <div className="App">
@@ -16,14 +21,13 @@ function App() {
           height: '100vh',
           width: '100vw',
         }}
+        onClick={createMarker}
       >
         <Geocoder />
-        <Layer
-          type="symbol"
-          id="marker"
-          layout={{ 'icon-color': '#fff', 'icon-image': 'bakery-11' }}
-        >
-          <Feature coordinates={[-0.481747846041145, 51.3233379650232]} />
+        <Layer type="circle">
+          {points.map((point) => (
+            <Feature key={point} coordinates={[point.lng, point.lat]} />
+          ))}
         </Layer>
       </Map>
     </div>
