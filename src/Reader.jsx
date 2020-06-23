@@ -6,7 +6,9 @@ const Reader = ({ isOpen, onClose, memory }) => {
   return (
     <Modal width="60vw" open={isOpen} onClose={onClose}>
       <Modal.Title>6/29/2007</Modal.Title>
-      <Modal.Content style={{ maxHeight: '50vh', overflow: 'scroll' }}>
+      <Modal.Content
+        style={{ maxHeight: '50vh', overflow: 'scroll', borderRadius: '10px' }}
+      >
         <Text>{memory.text}</Text>
       </Modal.Content>
     </Modal>

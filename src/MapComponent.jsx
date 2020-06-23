@@ -23,6 +23,7 @@ const MapComponent = ({ layerData, onFeatureClicked }) => {
       containerStyle={{
         height: '75vh',
         width: 'auto',
+        borderRadius: '10px',
       }}
       onClick={onMapClicked}
     >
