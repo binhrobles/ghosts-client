@@ -5,6 +5,9 @@ import Reader from './Reader';
 import MapComponent from './MapComponent';
 import memory from './memoryPlaceholder';
 
+// TODO: placeholder objects
+const ghosts = [];
+
 function App() {
   const [isReading, setIsReading] = React.useState(false);
 
@@ -12,7 +15,7 @@ function App() {
     setIsReading(false);
   };
 
-  const onFeatureClicked = (event) => {
+  const onMemoryClicked = (event) => {
     console.log(`feature ${event.feature.properties.idx} clicked`);
     setIsReading(true);
   };
@@ -35,7 +38,7 @@ function App() {
         </Page.Header>
 
         <Page.Content>
-          <MapComponent onFeatureClicked={onFeatureClicked} />
+          <MapComponent layerData={ghosts} onFeatureClicked={onMemoryClicked} />
         </Page.Content>
       </Page>
       <Page.Footer>

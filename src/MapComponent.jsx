@@ -5,13 +5,11 @@ import Geocoder from './Geocoder';
 import config from './config';
 
 const Map = ReactMapboxGl({
-  accessToken: config.mapboxPublicAccessToken,
+  accessToken: config.mapbox.publicAccessToken,
 });
-const initialCenter = [168.5891032768925, 42.83886200405351];
-const initialZoom = [0.8];
 
-const MapComponent = ({ onFeatureClicked }) => {
-  const [points, updatePoints] = React.useState([]);
+const MapComponent = ({ layerData, onFeatureClicked }) => {
+  const [points, updatePoints] = React.useState(layerData);
 
   const onMapClicked = (_, event) => {
     updatePoints((prev) => prev.concat(event.lngLat));
@@ -19,9 +17,9 @@ const MapComponent = ({ onFeatureClicked }) => {
 
   return (
     <Map
-      style={config.mapboxStyle}
-      center={initialCenter}
-      zoom={initialZoom}
+      style={config.mapbox.style.dark}
+      center={config.mapbox.initialCenter}
+      zoom={config.mapbox.initialZoom}
       containerStyle={{
         height: '75vh',
         width: 'auto',
@@ -44,6 +42,7 @@ const MapComponent = ({ onFeatureClicked }) => {
 };
 
 MapComponent.propTypes = {
+  layerData: PropTypes.array.isRequired,
   onFeatureClicked: PropTypes.func.isRequired,
 };
 

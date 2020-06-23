@@ -10,7 +10,7 @@ const Geocoder = () => {
   React.useEffect(() => {
     map.addControl(
       new MapboxGeocoder({
-        accessToken: config.mapboxPublicAccessToken,
+        accessToken: config.mapbox.publicAccessToken,
       })
     );
   }, [map]);
