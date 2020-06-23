@@ -1,5 +1,17 @@
 import React from 'react';
-import { Link, Page, Tabs, Row, User } from '@zeit-ui/react';
+import {
+  Card,
+  Text,
+  Textarea,
+  Divider,
+  Grid,
+  Link,
+  Page,
+  Tabs,
+  Row,
+  User,
+} from '@zeit-ui/react';
+// import { useSpring, animated } from 'react-spring';
 import Github from '@zeit-ui/react-icons/github';
 import Reader from './Reader';
 import MapComponent from './MapComponent';
@@ -20,6 +32,13 @@ function App() {
     setIsReading(true);
   };
 
+  // Map animation
+  // const animationProps = useSpring({
+  //   config: { friction: 150 },
+  //   opacity: 1,
+  //   from: { opacity: 0 },
+  // });
+
   return (
     <>
       <Reader isOpen={isReading} onClose={readerCloseHandler} memory={memory} />
@@ -38,7 +57,38 @@ function App() {
         </Page.Header>
 
         <Page.Content>
-          <MapComponent layerData={ghosts} onFeatureClicked={onMemoryClicked} />
+          <Grid.Container gap={2} justify="center">
+            <Grid xs={12}>
+              <MapComponent
+                layerData={ghosts}
+                onFeatureClicked={onMemoryClicked}
+              />
+            </Grid>
+            <Grid xs={12}>
+              <Card>
+                <Card.Content>
+                  <Text b>Leave A Memory</Text>
+                </Card.Content>
+                <Divider y={0} />
+                <Card.Content>
+                  <Textarea
+                    width="100%"
+                    minHeight="50vh"
+                    placeholder="What did you remember?"
+                  />
+                </Card.Content>
+                <Card.Footer>
+                  <Link
+                    color
+                    target="_blank"
+                    href="https://github.com/zeit-ui/react"
+                  >
+                    Visit source code on GitHub.
+                  </Link>
+                </Card.Footer>
+              </Card>
+            </Grid>
+          </Grid.Container>
         </Page.Content>
       </Page>
       <Page.Footer>

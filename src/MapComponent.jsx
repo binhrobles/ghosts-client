@@ -22,7 +22,7 @@ const MapComponent = ({ layerData, onFeatureClicked }) => {
       zoom={config.mapbox.initialZoom}
       containerStyle={{
         height: '75vh',
-        width: 'auto',
+        width: '100%',
         borderRadius: '10px',
       }}
       onClick={onMapClicked}
