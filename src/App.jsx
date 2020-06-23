@@ -1,6 +1,5 @@
 import React from 'react';
 import { Grid, Link, Page, Tabs, Row, User } from '@zeit-ui/react';
-// import { useSpring, animated } from 'react-spring';
 import Github from '@zeit-ui/react-icons/github';
 import Reader from './Reader';
 import Writer from './Writer';
@@ -56,13 +55,6 @@ function App() {
     setAppView(tab);
     setGridWidths(COMPONENT_WIDTHS[tab]);
   };
-
-  // Map animation
-  // const animationProps = useSpring({
-  //   config: { friction: 150 },
-  //   opacity: 1,
-  //   from: { opacity: 0 },
-  // });
 
   return (
     <>
