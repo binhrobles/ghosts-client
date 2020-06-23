@@ -17,6 +17,7 @@ const APP_VIEWS = {
 const COMPONENT_WIDTHS = {
   home: {
     map: {
+      xs: 24,
       sm: 24,
       md: 24,
     },
@@ -27,6 +28,7 @@ const COMPONENT_WIDTHS = {
   },
   create: {
     map: {
+      xs: 0,
       sm: 0,
       md: 12,
     },
@@ -79,15 +81,25 @@ function App() {
 
         <Page.Content>
           <Grid.Container gap={2} justify="center">
-            <Grid sm={gridWidths.map.sm} md={gridWidths.map.md}>
+            <Grid
+              xs={gridWidths.map.xs}
+              sm={gridWidths.map.sm}
+              md={gridWidths.map.md}
+            >
               <MapComponent
                 layerData={ghosts}
                 onFeatureClicked={onMemoryClicked}
               />
             </Grid>
-            <Grid sm={gridWidths.writer.sm} md={gridWidths.writer.md}>
-              <Writer />
-            </Grid>
+            {appView === APP_VIEWS.create && (
+              <Grid
+                xs={gridWidths.writer.xs}
+                sm={gridWidths.writer.sm}
+                md={gridWidths.writer.md}
+              >
+                <Writer />
+              </Grid>
+            )}
           </Grid.Container>
         </Page.Content>
       </Page>
