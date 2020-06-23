@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactMapboxGl, { Layer, Feature } from 'react-mapbox-gl';
-import { Page, Textarea, Modal } from '@zeit-ui/react';
+import { Link, Page, Text, Tabs, Modal, Row, User } from '@zeit-ui/react';
+import Github from '@zeit-ui/react-icons/github';
 import Geocoder from './Geocoder';
 import config from './config';
 
@@ -22,53 +23,102 @@ function App() {
     console.log(`feature ${event.feature.properties.idx} clicked`);
   };
 
-  const modalCloseHandler = (event) => {
+  const modalCloseHandler = () => {
     updatePoints((prev) => prev.concat(currentPoint));
     setModalOpen(false);
   };
 
   return (
-    <Page size="medium">
-      <Page.Header>
-        <h3>Reminisce</h3>
-      </Page.Header>
-      <Page.Content>
-        Click a place to add a memory.
-        <Map
-          style={config.mapboxStyle}
-          center={[168.5891032768925, 42.83886200405351]}
-          zoom={[0.8]}
-          containerStyle={{
-            height: '80vh',
-            width: '80vw',
-          }}
-          onClick={onMapClicked}
-        >
-          <Geocoder />
-          <Layer type="circle">
-            {points.map((point, idx) => (
-              <Feature
-                key={point}
-                properties={{ idx }}
-                coordinates={[point.lng, point.lat]}
-                onClick={onFeatureClicked}
-              />
-            ))}
-          </Layer>
-        </Map>
-        <Modal open={isModalOpen} onClose={modalCloseHandler}>
-          <Modal.Title>Modal</Modal.Title>
-          <Modal.Subtitle>{currentPoint.toString()}</Modal.Subtitle>
-          <Modal.Content>
-            <Textarea width="100%" placeholder="What are you remembering?" />
-          </Modal.Content>
-          <Modal.Action passive onClick={() => setModalOpen(false)}>
-            Cancel
-          </Modal.Action>
-          <Modal.Action>Submit</Modal.Action>
-        </Modal>
-      </Page.Content>
-    </Page>
+    <>
+      <Page size="medium">
+        <Page.Header>
+          <Row justify="space-between">
+            <Tabs initialValue="1">
+              <Tabs.Item label="reminisce" value="1" />
+              <Tabs.Item label="leave a memory" value="2" />
+            </Tabs>
+            <User
+              src="https://zeit.co/api/www/avatar/?u=evilrabbit&s=160"
+              name="Binh"
+            />
+          </Row>
+        </Page.Header>
+
+        <Page.Content>
+          <Map
+            style={config.mapboxStyle}
+            center={[168.5891032768925, 42.83886200405351]}
+            zoom={[0.8]}
+            containerStyle={{
+              height: '75vh',
+              width: 'auto',
+            }}
+            onClick={onMapClicked}
+          >
+            <Geocoder />
+            <Layer type="circle">
+              {points.map((point, idx) => (
+                <Feature
+                  key={point}
+                  properties={{ idx }}
+                  coordinates={[point.lng, point.lat]}
+                  onClick={onFeatureClicked}
+                />
+              ))}
+            </Layer>
+          </Map>
+        </Page.Content>
+      </Page>
+      <Page.Footer>
+        <Row align="bottom" justify="center">
+          <Link href="https://github.com/binhrobles/ghosts-client">
+            <Github />
+          </Link>
+        </Row>
+      </Page.Footer>
+
+      <Modal open={isModalOpen} onClose={modalCloseHandler}>
+        <Modal.Title>6/29/2007</Modal.Title>
+        <Modal.Content style={{ maxHeight: '50vh', overflow: 'scroll' }}>
+          <Text p>
+            Our mission is to make cloud computing accessible to everyone. We
+            build products for developers and designers. And those who aspire to
+            become one. Our mission is to make cloud computing accessible Our
+            mission is to make cloud computing accessible to everyone. We Our
+            mission is to make cloud computing accessible to everyone. We Our
+            mission is to make cloud computing accessible to everyone. We Our
+            mission is to make cloud computing accessible to everyone. We Our
+            mission is to make cloud computing accessible to everyone. We
+          </Text>
+          <Text p>
+            Our mission is to make cloud computing accessible to everyone. We
+            Our mission is to make cloud computing accessible to everyone. We
+            Our mission is to make cloud computing accessible to everyone. We
+            build products for developers and designers. And those who aspire to
+            become one. build products for developers and designers. And those
+            who aspire to become one. build products for developers and
+            designers. And those who aspire to become one. build products for
+          </Text>
+          <Text p>
+            developers and designers. And those who aspire to become one. build
+            products for developers and designers. And those who aspire to
+            become one. build products for developers and designers. And those
+            who aspire to become one. build products for developers and
+            designers. And those who aspire to become one. build products for
+            developers and designers. And those who aspire to become one. to
+            everyone. We build products for developers and designers. And those
+            who aspire to become one. Our mission is to make cloud computing
+            accessible to everyone. We build products for developers and
+            designers. And those who aspire to become one. Our mission is to
+            make cloud computing accessible to everyone. We build products for
+            developers and designers. And those who aspire to become one. Our
+            mission is to make cloud computing accessible to everyone. We build
+            products for developers and designers. And those who aspire to
+            become one.
+          </Text>
+        </Modal.Content>
+      </Modal>
+    </>
   );
 }
 
