@@ -7,15 +7,17 @@ import {
   MapComponent,
   NavBar,
 } from './Components/index';
-import memory from './memoryPlaceholder';
+import Memory from './Memory';
+import memoryPlaceholder from './memoryPlaceholder';
 import { APP_MODES, COMPONENT_WIDTHS } from './constants';
 
 // TODO: placeholder objects
 const ghosts = [];
 
 function App() {
-  const [isReading, setIsReading] = React.useState(false);
   const [appMode, setAppMode] = React.useState(APP_MODES.view);
+  const [isReading, setIsReading] = React.useState(false);
+  const [memory, updateMemory] = React.useState(new Memory()); // persist in sessionStorage maybe
   const [gridWidths, setGridWidths] = React.useState(COMPONENT_WIDTHS[appMode]);
 
   const readerCloseHandler = () => {
@@ -32,9 +34,17 @@ function App() {
     setGridWidths(COMPONENT_WIDTHS[tab]);
   };
 
+  const updateMemoryLocation = ({ lng, lat }) => {
+    updateMemory((prev) => ({ ...prev, location: { lng, lat } }));
+  };
+
   return (
     <>
-      <Reader isOpen={isReading} onClose={readerCloseHandler} memory={memory} />
+      <Reader
+        isOpen={isReading}
+        onClose={readerCloseHandler}
+        memory={memoryPlaceholder}
+      />
       <Page size="medium">
         <NavBar onTabChangeHandler={onTabChangeHandler} />
         <Page.Content>
@@ -47,6 +57,7 @@ function App() {
               <MapComponent
                 layerData={ghosts}
                 mode={appMode}
+                updateMemoryLocation={updateMemoryLocation}
                 onFeatureClicked={onMemoryClicked}
               />
             </Grid>
@@ -55,7 +66,7 @@ function App() {
               sm={gridWidths.writer.sm}
               md={gridWidths.writer.md}
             >
-              <Writer />
+              <Writer memory={memory} updateMemory={updateMemory} />
             </Grid>
           </Grid.Container>
         </Page.Content>

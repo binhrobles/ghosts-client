@@ -9,7 +9,12 @@ const Map = ReactMapboxGl({
   accessToken: config.mapbox.publicAccessToken,
 });
 
-const MapComponent = ({ mode, layerData, onFeatureClicked }) => {
+const MapComponent = ({
+  mode,
+  layerData,
+  updateMemoryLocation,
+  onFeatureClicked,
+}) => {
   const [points, updatePoints] = React.useState(layerData);
   const [currentMarkerCoords, updateCurrentMarker] = React.useState(null);
 
@@ -18,6 +23,7 @@ const MapComponent = ({ mode, layerData, onFeatureClicked }) => {
   const onMapClicked = (_, event) => {
     if (mode === APP_MODES.create) {
       updateCurrentMarker([event.lngLat.lng, event.lngLat.lat]);
+      updateMemoryLocation({ lng: event.lngLat.lng, lat: event.lngLat.lat });
     }
   };
 
@@ -61,6 +67,7 @@ const MapComponent = ({ mode, layerData, onFeatureClicked }) => {
 MapComponent.propTypes = {
   mode: PropTypes.string.isRequired,
   layerData: PropTypes.array.isRequired,
+  updateMemoryLocation: PropTypes.func.isRequired,
   onFeatureClicked: PropTypes.func.isRequired,
 };
 
