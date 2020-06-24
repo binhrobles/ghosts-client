@@ -12,8 +12,8 @@ const NavBar = ({ onTabChangeHandler }) => {
           onChange={onTabChangeHandler}
           hideDivider
         >
-          <Tabs.Item label="reminisce" value={APP_MODES.view} />
-          <Tabs.Item label="leave a memory" value={APP_MODES.create} />
+          <Tabs.Item label="listen" value={APP_MODES.view} />
+          <Tabs.Item label="speak" value={APP_MODES.create} />
         </Tabs>
         <Text h4>Shared Space</Text>
       </Row>
