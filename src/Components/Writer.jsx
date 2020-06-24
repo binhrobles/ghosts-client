@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Text, Textarea, Divider, Link } from '@zeit-ui/react';
+import { Button, Card, Text, Textarea, Divider, Row } from '@zeit-ui/react';
 
 const Writer = () => {
   return (
@@ -11,14 +11,14 @@ const Writer = () => {
       <Card.Content>
         <Textarea
           width="100%"
-          minHeight="50vh"
+          minHeight="45vh"
           placeholder="What did you remember?"
         />
       </Card.Content>
-      <Card.Footer>
-        <Link color target="_blank" href="https://github.com/zeit-ui/react">
-          Visit source code on GitHub.
-        </Link>
+      <Card.Footer disableAutoMargin>
+        <Row style={{ width: '100%' }} justify="end">
+          <Button auto>Continue</Button>
+        </Row>
       </Card.Footer>
     </Card>
   );
