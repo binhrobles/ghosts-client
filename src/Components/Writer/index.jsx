@@ -1,15 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Card, Divider } from '@zeit-ui/react';
-import ContentComponent from './Content';
-import DescriptionComponent from './Description';
-import FooterComponent from './Footer';
+import {
+  Button,
+  Card,
+  Description,
+  Divider,
+  Row,
+  Spacer,
+} from '@zeit-ui/react';
+import Metadata from './Metadata';
+import Editor from './Editor';
 import Memory from '../../Memory';
-import { WRITER_MODES } from './constants';
 
 const Writer = ({ memory, updateMemory }) => {
-  const [writerView, setWriterView] = React.useState(WRITER_MODES.text);
-
   const onSubmit = () => {
     // TODO: assert text/location exist
     // TODO: assert date is parseable
@@ -19,22 +22,20 @@ const Writer = ({ memory, updateMemory }) => {
   return (
     <Card>
       <Card.Content>
-        <DescriptionComponent writerView={writerView} />
+        <Description title="Leave Something" />
       </Card.Content>
       <Divider y={0} />
       <Card.Content>
-        <ContentComponent
-          memory={memory}
-          updateMemory={updateMemory}
-          writerView={writerView}
-        />
+        <Editor memory={memory} updateMemory={updateMemory} />
+        <Spacer x={1} />
+        <Metadata memory={memory} updateMemory={updateMemory} />
       </Card.Content>
       <Card.Footer>
-        <FooterComponent
-          writerView={writerView}
-          setWriterView={setWriterView}
-          onSubmit={onSubmit}
-        />
+        <Row style={{ width: '100%' }} justify="end">
+          <Button auto onClick={onSubmit}>
+            Submit
+          </Button>
+        </Row>
       </Card.Footer>
     </Card>
   );

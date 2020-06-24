@@ -1,0 +1,8 @@
+.ql-editor {
+  min-height: 50vh;
+}
+
+/* for dark theme */
+.ql-editor.ql-blank::before {
+  color: #888888;
+}

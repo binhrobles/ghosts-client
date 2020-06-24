@@ -8,6 +8,7 @@ import {
   NavBar,
 } from './Components/index';
 import Memory from './Memory';
+import useObjectWithSessionStorage from './common/useObjectWithSessionStorage';
 import memoryPlaceholder from './memoryPlaceholder';
 import { APP_MODES, COMPONENT_WIDTHS } from './constants';
 
@@ -17,8 +18,13 @@ const ghosts = [];
 function App() {
   const [appMode, setAppMode] = React.useState(APP_MODES.view);
   const [isReading, setIsReading] = React.useState(false);
-  const [memory, updateMemory] = React.useState(new Memory()); // persist in sessionStorage maybe
+  const [memory, updateMemory] = useObjectWithSessionStorage('memory');
   const [gridWidths, setGridWidths] = React.useState(COMPONENT_WIDTHS[appMode]);
+
+  // initialize memory in session, if one didn't exist
+  React.useEffect(() => {
+    if (!memory) updateMemory(new Memory());
+  }, []);
 
   const readerCloseHandler = () => {
     setIsReading(false);

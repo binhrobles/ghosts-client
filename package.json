@@ -2,6 +2,7 @@
   "name": "ghosts-client",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://binhrobles.com/ghosts-client/",
   "dependencies": {
     "@mapbox/mapbox-gl-geocoder": "^4.5.1",
     "@testing-library/jest-dom": "^4.2.4",
@@ -14,6 +15,7 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-mapbox-gl": "^4.8.6",
+    "react-quill": "^1.3.5",
     "react-scripts": "3.4.1"
   },
   "devDependencies": {
@@ -29,7 +31,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "predeploy": "npm run build && cp .env build/",
+    "predeploy": "npm run build",
     "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
