@@ -15,8 +15,8 @@ const ghosts = [];
 
 function App() {
   const [isReading, setIsReading] = React.useState(false);
-  const [appView, setAppView] = React.useState(APP_MODES.view);
-  const [gridWidths, setGridWidths] = React.useState(COMPONENT_WIDTHS[appView]);
+  const [appMode, setAppMode] = React.useState(APP_MODES.view);
+  const [gridWidths, setGridWidths] = React.useState(COMPONENT_WIDTHS[appMode]);
 
   const readerCloseHandler = () => {
     setIsReading(false);
@@ -28,7 +28,7 @@ function App() {
   };
 
   const onTabChangeHandler = (tab) => {
-    setAppView(tab);
+    setAppMode(tab);
     setGridWidths(COMPONENT_WIDTHS[tab]);
   };
 
@@ -46,6 +46,7 @@ function App() {
             >
               <MapComponent
                 layerData={ghosts}
+                mode={appMode}
                 onFeatureClicked={onMemoryClicked}
               />
             </Grid>

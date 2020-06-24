@@ -2,17 +2,23 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ReactMapboxGl, { Layer, Feature } from 'react-mapbox-gl';
 import Geocoder from './Geocoder';
+import { APP_MODES } from '../constants';
 import config from '../config';
 
 const Map = ReactMapboxGl({
   accessToken: config.mapbox.publicAccessToken,
 });
 
-const MapComponent = ({ layerData, onFeatureClicked }) => {
+const MapComponent = ({ mode, layerData, onFeatureClicked }) => {
   const [points, updatePoints] = React.useState(layerData);
+  const [currentMarkerCoords, updateCurrentMarker] = React.useState(null);
 
+  // if in `create` mode, clicking map should leave marker
+  // and report coordinates to parent
   const onMapClicked = (_, event) => {
-    updatePoints((prev) => prev.concat(event.lngLat));
+    if (mode === APP_MODES.create) {
+      updateCurrentMarker([event.lngLat.lng, event.lngLat.lat]);
+    }
   };
 
   return (
@@ -27,7 +33,10 @@ const MapComponent = ({ layerData, onFeatureClicked }) => {
       }}
       onClick={onMapClicked}
     >
+      {/* search bar */}
       <Geocoder />
+
+      {/* existing memories */}
       <Layer type="circle">
         {points.map((point, idx) => (
           <Feature
@@ -38,11 +47,19 @@ const MapComponent = ({ layerData, onFeatureClicked }) => {
           />
         ))}
       </Layer>
+
+      {/* marker set for leaving a memory */}
+      {currentMarkerCoords && (
+        <Layer type="circle" paint={{ 'circle-color': '#ffffff' }}>
+          <Feature coordinates={currentMarkerCoords} />
+        </Layer>
+      )}
     </Map>
   );
 };
 
 MapComponent.propTypes = {
+  mode: PropTypes.string.isRequired,
   layerData: PropTypes.array.isRequired,
   onFeatureClicked: PropTypes.func.isRequired,
 };
