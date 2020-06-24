@@ -3,6 +3,6 @@ import Geocoder from './Geocoder';
 import MapComponent from './MapComponent';
 import NavBar from './NavBar';
 import Reader from './Reader';
-import Writer from './Writer';
+import Writer from './Writer/index';
 
 export { Footer, Geocoder, MapComponent, NavBar, Reader, Writer };

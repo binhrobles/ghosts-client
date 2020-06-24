@@ -10,7 +10,7 @@ export default function Memory() {
     lat: 0.0,
     lng: 0.0,
   };
-  this.date = null;
+  this.date = '';
   this.submitter = 'anon';
   this.ttl = TTL.WEEK;
   this.image = '';
