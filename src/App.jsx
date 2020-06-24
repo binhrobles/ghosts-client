@@ -1,47 +1,21 @@
 import React from 'react';
-import { Grid, Link, Page, Tabs, Row, User } from '@zeit-ui/react';
-import Github from '@zeit-ui/react-icons/github';
-import Reader from './Reader';
-import Writer from './Writer';
-import MapComponent from './MapComponent';
+import { Grid, Page } from '@zeit-ui/react';
+import {
+  Reader,
+  Writer,
+  Footer,
+  MapComponent,
+  NavBar,
+} from './Components/index';
 import memory from './memoryPlaceholder';
+import { APP_MODES, COMPONENT_WIDTHS } from './constants';
 
 // TODO: placeholder objects
 const ghosts = [];
 
-const APP_VIEWS = {
-  home: 'home',
-  create: 'create',
-};
-
-const COMPONENT_WIDTHS = {
-  home: {
-    map: {
-      xs: 24,
-      sm: 24,
-      md: 24,
-    },
-    writer: {
-      sm: 0,
-      md: 0,
-    },
-  },
-  create: {
-    map: {
-      xs: 0,
-      sm: 0,
-      md: 12,
-    },
-    writer: {
-      sm: 24,
-      md: 12,
-    },
-  },
-};
-
 function App() {
   const [isReading, setIsReading] = React.useState(false);
-  const [appView, setAppView] = React.useState(APP_VIEWS.home);
+  const [appView, setAppView] = React.useState(APP_MODES.view);
   const [gridWidths, setGridWidths] = React.useState(COMPONENT_WIDTHS[appView]);
 
   const readerCloseHandler = () => {
@@ -62,23 +36,7 @@ function App() {
     <>
       <Reader isOpen={isReading} onClose={readerCloseHandler} memory={memory} />
       <Page size="medium">
-        <Page.Header>
-          <Row justify="space-between">
-            <Tabs
-              initialValue={appView}
-              onChange={onTabChangeHandler}
-              hideDivider
-            >
-              <Tabs.Item label="reminisce" value={APP_VIEWS.home} />
-              <Tabs.Item label="leave a memory" value={APP_VIEWS.create} />
-            </Tabs>
-            <User
-              src="https://zeit.co/api/www/avatar/?u=evilrabbit&s=160"
-              name="Binh"
-            />
-          </Row>
-        </Page.Header>
-
+        <NavBar onTabChangeHandler={onTabChangeHandler} />
         <Page.Content>
           <Grid.Container gap={2} justify="center">
             <Grid
@@ -91,25 +49,17 @@ function App() {
                 onFeatureClicked={onMemoryClicked}
               />
             </Grid>
-            {appView === APP_VIEWS.create && (
-              <Grid
-                xs={gridWidths.writer.xs}
-                sm={gridWidths.writer.sm}
-                md={gridWidths.writer.md}
-              >
-                <Writer />
-              </Grid>
-            )}
+            <Grid
+              xs={gridWidths.writer.xs}
+              sm={gridWidths.writer.sm}
+              md={gridWidths.writer.md}
+            >
+              <Writer />
+            </Grid>
           </Grid.Container>
         </Page.Content>
       </Page>
-      <Page.Footer>
-        <Row align="bottom" justify="center">
-          <Link href="https://github.com/binhrobles/ghosts-client">
-            <Github />
-          </Link>
-        </Row>
-      </Page.Footer>
+      <Footer />
     </>
   );
 }

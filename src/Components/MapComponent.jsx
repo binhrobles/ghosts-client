@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ReactMapboxGl, { Layer, Feature } from 'react-mapbox-gl';
 import Geocoder from './Geocoder';
-import config from './config';
+import config from '../config';
 
 const Map = ReactMapboxGl({
   accessToken: config.mapbox.publicAccessToken,

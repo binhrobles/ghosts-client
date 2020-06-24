@@ -9,8 +9,8 @@ const config = Object.freeze({
       dark: 'mapbox://styles/binhrobles/ckbrgp26q1gdk1imt419e9bw8',
     },
     publicAccessToken: process.env.REACT_APP_MAPBOX_PUBLIC_ACCESS_TOKEN,
-    initialCenter: [168.5891032768925, 42.83886200405351],
-    initialZoom: [0.8],
+    initialCenter: [170, 22],
+    initialZoom: [0.85],
   },
 });
 
