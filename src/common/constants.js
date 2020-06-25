@@ -11,6 +11,7 @@ export const COMPONENT_WIDTHS = Object.freeze({
       md: 24,
     },
     writer: {
+      xs: 0,
       sm: 0,
       md: 0,
     },
@@ -22,6 +23,7 @@ export const COMPONENT_WIDTHS = Object.freeze({
       md: 12,
     },
     writer: {
+      xs: 24,
       sm: 24,
       md: 12,
     },
