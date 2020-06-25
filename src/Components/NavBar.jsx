@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Page, Row, Tabs, Text } from '@zeit-ui/react';
-import { APP_MODES } from '../constants';
+import { APP_MODES } from '../common/constants';
 
 const NavBar = ({ onTabChangeHandler }) => {
   return (

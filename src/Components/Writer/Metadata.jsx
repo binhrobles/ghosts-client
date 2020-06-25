@@ -1,12 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Container, Grid, Input, Radio, Text, Spacer } from '@zeit-ui/react';
-import Memory, { TTL } from '../../Memory';
+import Entry, { TTL } from '../../common/Entry';
 
-const Metadata = ({ memory, updateMemory }) => {
+const Metadata = ({ entry, updateEntry }) => {
   const onAttributeChange = (key) => {
     return (event) => {
-      updateMemory((prev) => {
+      updateEntry((prev) => {
         const copy = { ...prev };
         copy[key] = event.target.value;
         return copy;
@@ -14,7 +14,7 @@ const Metadata = ({ memory, updateMemory }) => {
     };
   };
   const onTtlChange = (ttl) => {
-    updateMemory((prev) => ({ ...prev, ttl }));
+    updateEntry((prev) => ({ ...prev, ttl }));
   };
 
   return (
@@ -23,7 +23,7 @@ const Metadata = ({ memory, updateMemory }) => {
         <Input
           label="When it happened"
           size="mini"
-          value={memory.date}
+          value={entry.date}
           onChange={onAttributeChange('date')}
           placeholder="May 27, 2007"
         />
@@ -33,7 +33,7 @@ const Metadata = ({ memory, updateMemory }) => {
         <Input
           label="Left by"
           size="mini"
-          value={memory.submitter}
+          value={entry.submitter}
           onChange={onAttributeChange('submitter')}
           placeholder="Anonymous"
         />
@@ -47,7 +47,7 @@ const Metadata = ({ memory, updateMemory }) => {
           <Spacer x={2} />
           <Radio.Group
             size="mini"
-            value={memory.ttl}
+            value={entry.ttl}
             onChange={onTtlChange}
             useRow
           >
@@ -62,8 +62,8 @@ const Metadata = ({ memory, updateMemory }) => {
 };
 
 Metadata.propTypes = {
-  memory: PropTypes.objectOf(Memory).isRequired,
-  updateMemory: PropTypes.func.isRequired,
+  entry: PropTypes.instanceOf(Entry).isRequired,
+  updateEntry: PropTypes.func.isRequired,
 };
 
 export default Metadata;

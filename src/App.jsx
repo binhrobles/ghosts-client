@@ -1,16 +1,10 @@
 import React from 'react';
 import { Grid, Page } from '@zeit-ui/react';
-import {
-  Reader,
-  Writer,
-  Footer,
-  MapComponent,
-  NavBar,
-} from './Components/index';
-import Memory from './Memory';
+import { Reader, Writer, Footer, Map, NavBar } from './Components/index';
+import Entry from './common/Entry';
 import useObjectWithSessionStorage from './common/useObjectWithSessionStorage';
-import memoryPlaceholder from './memoryPlaceholder';
-import { APP_MODES, COMPONENT_WIDTHS } from './constants';
+import entryPlaceholder from './entryPlaceholder';
+import { APP_MODES, COMPONENT_WIDTHS } from './common/constants';
 
 // TODO: placeholder objects
 const ghosts = [];
@@ -18,19 +12,16 @@ const ghosts = [];
 function App() {
   const [appMode, setAppMode] = React.useState(APP_MODES.view);
   const [isReading, setIsReading] = React.useState(false);
-  const [memory, updateMemory] = useObjectWithSessionStorage('memory');
+  const [entry, updateEntry] = useObjectWithSessionStorage('entry');
   const [gridWidths, setGridWidths] = React.useState(COMPONENT_WIDTHS[appMode]);
 
-  // initialize memory in session, if one didn't exist
-  React.useEffect(() => {
-    if (!memory) updateMemory(new Memory());
-  }, []);
+  if (!entry) updateEntry(new Entry());
 
   const readerCloseHandler = () => {
     setIsReading(false);
   };
 
-  const onMemoryClicked = (event) => {
+  const onEntryClicked = (event) => {
     console.log(`feature ${event.feature.properties.idx} clicked`);
     setIsReading(true);
   };
@@ -40,8 +31,8 @@ function App() {
     setGridWidths(COMPONENT_WIDTHS[tab]);
   };
 
-  const updateMemoryLocation = ({ lng, lat }) => {
-    updateMemory((prev) => ({ ...prev, location: { lng, lat } }));
+  const updateEntryLocation = ({ lng, lat }) => {
+    updateEntry((prev) => ({ ...prev, location: { lng, lat } }));
   };
 
   return (
@@ -49,7 +40,7 @@ function App() {
       <Reader
         isOpen={isReading}
         onClose={readerCloseHandler}
-        memory={memoryPlaceholder}
+        entry={entryPlaceholder}
       />
       <Page size="medium">
         <NavBar onTabChangeHandler={onTabChangeHandler} />
@@ -60,11 +51,11 @@ function App() {
               sm={gridWidths.map.sm}
               md={gridWidths.map.md}
             >
-              <MapComponent
+              <Map
                 layerData={ghosts}
                 mode={appMode}
-                updateMemoryLocation={updateMemoryLocation}
-                onFeatureClicked={onMemoryClicked}
+                updateEntryLocation={updateEntryLocation}
+                onFeatureClicked={onEntryClicked}
               />
             </Grid>
             <Grid
@@ -72,7 +63,7 @@ function App() {
               sm={gridWidths.writer.sm}
               md={gridWidths.writer.md}
             >
-              <Writer memory={memory} updateMemory={updateMemory} />
+              <Writer entry={entry} updateEntry={updateEntry} />
             </Grid>
           </Grid.Container>
         </Page.Content>

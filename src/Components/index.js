@@ -1,8 +1,8 @@
 import Footer from './Footer';
 import Geocoder from './Geocoder';
-import MapComponent from './MapComponent';
+import Map from './Map';
 import NavBar from './NavBar';
 import Reader from './Reader';
 import Writer from './Writer/index';
 
-export { Footer, Geocoder, MapComponent, NavBar, Reader, Writer };
+export { Footer, Geocoder, Map, NavBar, Reader, Writer };

@@ -4,14 +4,15 @@ export const TTL = Object.freeze({
   NEVER: -1,
 });
 
-export default function Memory() {
+export default function Entry() {
   this.text = '';
+  this.description = '';
   this.location = {
     lat: 0.0,
     lng: 0.0,
   };
-  this.date = '';
-  this.submitter = 'anon';
   this.ttl = TTL.WEEK;
-  this.image = '';
+  this.date = ''; // optional
+  this.submitter = 'anon'; // optional
+  this.tags = []; // optional
 }

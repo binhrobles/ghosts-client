@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Card, Text, Modal } from '@zeit-ui/react';
+import Entry from '../common/Entry';
 
-const Reader = ({ isOpen, onClose, memory }) => {
+const Reader = ({ isOpen, onClose, entry }) => {
   return (
     <Modal width="60vw" open={isOpen} onClose={onClose}>
       <Modal.Title>6/29/2007</Modal.Title>
@@ -14,7 +15,7 @@ const Reader = ({ isOpen, onClose, memory }) => {
             borderRadius: '10px',
           }}
         >
-          <Text>{memory.text}</Text>
+          <Text>{entry.text}</Text>
         </Card>
       </Modal.Content>
     </Modal>
@@ -24,9 +25,7 @@ const Reader = ({ isOpen, onClose, memory }) => {
 Reader.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-  memory: PropTypes.shape({
-    text: PropTypes.string,
-  }).isRequired,
+  entry: PropTypes.instanceOf(Entry).isRequired,
 };
 
 export default Reader;

@@ -2,19 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ReactMapboxGl, { Layer, Feature } from 'react-mapbox-gl';
 import Geocoder from './Geocoder';
-import { APP_MODES } from '../constants';
+import { APP_MODES } from '../common/constants';
 import config from '../config';
 
-const Map = ReactMapboxGl({
+const Mapbox = ReactMapboxGl({
   accessToken: config.mapbox.publicAccessToken,
 });
 
-const MapComponent = ({
-  mode,
-  layerData,
-  updateMemoryLocation,
-  onFeatureClicked,
-}) => {
+const Map = ({ mode, layerData, updateMemoryLocation, onFeatureClicked }) => {
   const [points, updatePoints] = React.useState(layerData);
   const [currentMarkerCoords, updateCurrentMarker] = React.useState(null);
 
@@ -28,7 +23,7 @@ const MapComponent = ({
   };
 
   return (
-    <Map
+    <Mapbox
       style={config.mapbox.style.dark}
       center={config.mapbox.initialCenter}
       zoom={config.mapbox.initialZoom}
@@ -60,15 +55,15 @@ const MapComponent = ({
           <Feature coordinates={currentMarkerCoords} />
         </Layer>
       )}
-    </Map>
+    </Mapbox>
   );
 };
 
-MapComponent.propTypes = {
+Map.propTypes = {
   mode: PropTypes.string.isRequired,
   layerData: PropTypes.array.isRequired,
   updateMemoryLocation: PropTypes.func.isRequired,
   onFeatureClicked: PropTypes.func.isRequired,
 };
 
-export default MapComponent;
+export default Map;

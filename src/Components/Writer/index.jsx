@@ -10,13 +10,16 @@ import {
 } from '@zeit-ui/react';
 import Metadata from './Metadata';
 import Editor from './Editor';
-import Memory from '../../Memory';
+import Entry from '../../common/Entry';
 
-const Writer = ({ memory, updateMemory }) => {
+const Writer = ({ entry, updateEntry }) => {
   const onSubmit = () => {
-    // TODO: assert text/location exist
-    // TODO: assert date is parseable
-    console.log(memory);
+    // TODO
+    // assert text/description/location exist
+    // assert date is parseable
+    // send to backend
+    // clear session storage ?
+    console.log(entry);
   };
 
   return (
@@ -26,9 +29,9 @@ const Writer = ({ memory, updateMemory }) => {
       </Card.Content>
       <Divider y={0} />
       <Card.Content>
-        <Editor memory={memory} updateMemory={updateMemory} />
+        <Editor entry={entry} updateEntry={updateEntry} />
         <Spacer x={1} />
-        <Metadata memory={memory} updateMemory={updateMemory} />
+        <Metadata entry={entry} updateEntry={updateEntry} />
       </Card.Content>
       <Card.Footer>
         <Row style={{ width: '100%' }} justify="end">
@@ -42,8 +45,8 @@ const Writer = ({ memory, updateMemory }) => {
 };
 
 Writer.propTypes = {
-  memory: PropTypes.objectOf(Memory).isRequired,
-  updateMemory: PropTypes.func.isRequired,
+  entry: PropTypes.instanceOf(Entry).isRequired,
+  updateEntry: PropTypes.func.isRequired,
 };
 
 export default Writer;
