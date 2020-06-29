@@ -9,7 +9,7 @@ const Mapbox = ReactMapboxGl({
   accessToken: config.mapbox.publicAccessToken,
 });
 
-const Map = ({ mode, layerData, updateMemoryLocation, onFeatureClicked }) => {
+const Map = ({ mode, layerData, updateEntryLocation, onFeatureClicked }) => {
   const [points, updatePoints] = React.useState(layerData);
   const [currentMarkerCoords, updateCurrentMarker] = React.useState(null);
 
@@ -18,7 +18,7 @@ const Map = ({ mode, layerData, updateMemoryLocation, onFeatureClicked }) => {
   const onMapClicked = (_, event) => {
     if (mode === APP_MODES.create) {
       updateCurrentMarker([event.lngLat.lng, event.lngLat.lat]);
-      updateMemoryLocation({ lng: event.lngLat.lng, lat: event.lngLat.lat });
+      updateEntryLocation({ lng: event.lngLat.lng, lat: event.lngLat.lat });
     }
   };
 
@@ -37,7 +37,7 @@ const Map = ({ mode, layerData, updateMemoryLocation, onFeatureClicked }) => {
       {/* search bar */}
       <Geocoder />
 
-      {/* existing memories */}
+      {/* existing entries */}
       <Layer type="circle">
         {points.map((point, idx) => (
           <Feature
@@ -49,7 +49,7 @@ const Map = ({ mode, layerData, updateMemoryLocation, onFeatureClicked }) => {
         ))}
       </Layer>
 
-      {/* marker set for leaving a memory */}
+      {/* marker set for leaving a entry */}
       {currentMarkerCoords && (
         <Layer type="circle" paint={{ 'circle-color': '#ffffff' }}>
           <Feature coordinates={currentMarkerCoords} />
@@ -62,7 +62,7 @@ const Map = ({ mode, layerData, updateMemoryLocation, onFeatureClicked }) => {
 Map.propTypes = {
   mode: PropTypes.string.isRequired,
   layerData: PropTypes.array.isRequired,
-  updateMemoryLocation: PropTypes.func.isRequired,
+  updateEntryLocation: PropTypes.func.isRequired,
   onFeatureClicked: PropTypes.func.isRequired,
 };
 

@@ -12,10 +12,11 @@ const ghosts = [];
 function App() {
   const [appMode, setAppMode] = React.useState(APP_MODES.view);
   const [isReading, setIsReading] = React.useState(false);
-  const [entry, updateEntry] = useObjectWithSessionStorage('entry');
+  const [draftEntry, updateDraftEntry] = useObjectWithSessionStorage('entry');
+  const [selectedEntry, updateSelectedEntry] = React.useState(null);
   const [gridWidths, setGridWidths] = React.useState(COMPONENT_WIDTHS[appMode]);
 
-  if (!entry) updateEntry(new Entry());
+  if (!draftEntry) updateDraftEntry(new Entry());
 
   const readerCloseHandler = () => {
     setIsReading(false);
@@ -23,6 +24,7 @@ function App() {
 
   const onEntryClicked = (event) => {
     console.log(`feature ${event.feature.properties.idx} clicked`);
+    updateSelectedEntry(event.feature.properties.idx);
     setIsReading(true);
   };
 
@@ -32,7 +34,7 @@ function App() {
   };
 
   const updateEntryLocation = ({ lng, lat }) => {
-    updateEntry((prev) => ({ ...prev, location: { lng, lat } }));
+    updateDraftEntry((prev) => ({ ...prev, location: { lng, lat } }));
   };
 
   return (
@@ -63,7 +65,7 @@ function App() {
               sm={gridWidths.writer.sm}
               md={gridWidths.writer.md}
             >
-              <Writer entry={entry} updateEntry={updateEntry} />
+              <Writer entry={draftEntry} updateEntry={updateDraftEntry} />
             </Grid>
           </Grid.Container>
         </Page.Content>

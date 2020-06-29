@@ -11,15 +11,23 @@ import {
 import Metadata from './Metadata';
 import Editor from './Editor';
 import Entry from '../../common/Entry';
+import { CreateClient, CreateEntry } from '../../Http/entries';
+import config from '../../config';
+
+let entriesClient = null;
 
 const Writer = ({ entry, updateEntry }) => {
+  if (!entriesClient) entriesClient = CreateClient(config.baseURL);
+
   const onSubmit = () => {
+    console.log(entry);
     // TODO
     // assert text/description/location exist
     // assert date is parseable
-    // send to backend
     // clear session storage ?
-    console.log(entry);
+
+    // send to backend
+    CreateEntry({ client: entriesClient, namespace: 'public', entry });
   };
 
   return (
