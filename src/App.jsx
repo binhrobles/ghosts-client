@@ -38,7 +38,7 @@ function App() {
   };
 
   return (
-    <Router>
+    <Router basename="/ghosts-client/">
       <Page size="large">
         <NavBar />
         <Page.Content>
@@ -46,7 +46,7 @@ function App() {
             <Route exact path="/">
               <Redirect to={APP_MODES.listen.pathname} />
             </Route>
-            <Route exact path={APP_MODES.listen.pathname}>
+            <Route path={APP_MODES.listen.pathname}>
               <Reader
                 isOpen={isReading}
                 onClose={readerCloseHandler}
