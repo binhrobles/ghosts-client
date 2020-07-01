@@ -79,7 +79,7 @@ const SpeakFlow = ({ updateEntryLocation, entry, updateEntry }) => {
     <Card>
       <Metadata entry={entry} updateEntry={updateEntry} />
       <Card.Footer>
-        <Row style={{ width: '50%' }} justify="space-between">
+        <Row style={{ width: '100%' }} justify="space-between">
           <ButtonComponent
             label="Back"
             onClick={() => updateStage(STAGE.WRITING)}
