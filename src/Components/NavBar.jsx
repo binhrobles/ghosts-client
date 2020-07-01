@@ -1,10 +1,11 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
+import { useLocation, useHistory } from 'react-router-dom';
 import { Page, Row, Tabs, Text } from '@zeit-ui/react';
 import { APP_MODES } from '../common/constants';
 
 const NavBar = () => {
   const history = useHistory();
+  const location = useLocation();
   const onChangeHandler = (path) => {
     history.push(path);
   };
@@ -13,7 +14,7 @@ const NavBar = () => {
     <Page.Header>
       <Row justify="space-between">
         <Tabs
-          initialValue={APP_MODES.listen.pathname}
+          initialValue={location.pathname}
           onChange={onChangeHandler}
           hideDivider
         >

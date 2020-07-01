@@ -1,24 +1,30 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { useLocation, useHistory } from 'react-router-dom';
 import ReactMapboxGl, { Layer, Feature } from 'react-mapbox-gl';
 import Geocoder from './Geocoder';
-import config from '../config';
-import { APP_MODES } from '../common/constants';
+import config from '../../config';
 
 const Mapbox = ReactMapboxGl({
   accessToken: config.mapbox.publicAccessToken,
 });
 
+const getLastMarkerCoords = () => {
+  const storedEntry = sessionStorage.getItem('entry');
+  if (!storedEntry) return null;
+  const entry = JSON.parse(storedEntry);
+  return [entry.location.lng, entry.location.lat];
+};
+
 const Map = ({ layerData, updateEntryLocation, onFeatureClicked }) => {
   const [points, updatePoints] = React.useState(layerData);
-  const [currentMarkerCoords, updateCurrentMarker] = React.useState(null);
-  const location = useLocation();
+  const [currentMarkerCoords, updateCurrentMarker] = React.useState(
+    getLastMarkerCoords()
+  );
 
   // if in `create` mode, clicking map should leave marker
   // report coordinates to parent
   const onMapClicked = (_, event) => {
-    if (location.pathname.includes(APP_MODES.speak.pathname)) {
+    if (updateEntryLocation) {
       updateCurrentMarker([event.lngLat.lng, event.lngLat.lat]);
       updateEntryLocation({ lng: event.lngLat.lng, lat: event.lngLat.lat });
     }
@@ -62,9 +68,15 @@ const Map = ({ layerData, updateEntryLocation, onFeatureClicked }) => {
 };
 
 Map.propTypes = {
-  layerData: PropTypes.array.isRequired,
-  updateEntryLocation: PropTypes.func.isRequired,
-  onFeatureClicked: PropTypes.func.isRequired,
+  layerData: PropTypes.array,
+  updateEntryLocation: PropTypes.func,
+  onFeatureClicked: PropTypes.func,
+};
+
+Map.defaultProps = {
+  layerData: [],
+  updateEntryLocation: null,
+  onFeatureClicked: null,
 };
 
 export default Map;

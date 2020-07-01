@@ -6,7 +6,8 @@ import {
   Route,
   Redirect,
 } from 'react-router-dom';
-import { Reader, Writer, Footer, Map, NavBar } from './Components/index';
+import { Reader, SpeakFlow, Footer, NavBar } from './Components/index';
+import Map from './Components/common/Map';
 import Entry from './common/Entry';
 import useObjectWithSessionStorage from './common/useObjectWithSessionStorage';
 import { APP_MODES } from './common/constants';
@@ -36,14 +37,6 @@ function App() {
     updateDraftEntry((prev) => ({ ...prev, location: { lng, lat } }));
   };
 
-  const map = (
-    <Map
-      layerData={ghosts}
-      updateEntryLocation={updateEntryLocation}
-      onFeatureClicked={onEntryClicked}
-    />
-  );
-
   return (
     <Router>
       <Page size="large">
@@ -59,12 +52,15 @@ function App() {
                 onClose={readerCloseHandler}
                 entry={entryPlaceholder}
               />
-              {map}
+              <Map layerData={ghosts} onFeatureClicked={onEntryClicked} />
             </Route>
 
             <Route path={APP_MODES.speak.pathname}>
-              {map}
-              <Writer entry={draftEntry} updateEntry={updateDraftEntry} />
+              <SpeakFlow
+                updateEntryLocation={updateEntryLocation}
+                entry={draftEntry}
+                updateEntry={updateDraftEntry}
+              />
             </Route>
           </Switch>
         </Page.Content>
