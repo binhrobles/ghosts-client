@@ -38,15 +38,12 @@ function App() {
   };
 
   return (
-    <Router basename="/ghosts-client/">
+    <Router basename="/ghosts-client">
       <Page size="large">
         <NavBar />
         <Page.Content>
           <Switch>
             <Route exact path="/">
-              <Redirect to={APP_MODES.listen.pathname} />
-            </Route>
-            <Route path={APP_MODES.listen.pathname}>
               <Reader
                 isOpen={isReading}
                 onClose={readerCloseHandler}
