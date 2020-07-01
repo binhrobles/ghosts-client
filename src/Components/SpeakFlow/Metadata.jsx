@@ -2,15 +2,18 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Container, Grid, Input, Radio, Text, Spacer } from '@zeit-ui/react';
 import Entry, { TTL } from '../../common/Entry';
+import config from '../../config';
 
 const Metadata = ({ entry, updateEntry }) => {
   const onAttributeChange = (key) => {
     return (event) => {
-      updateEntry((prev) => {
-        const copy = { ...prev };
-        copy[key] = event.target.value;
-        return copy;
-      });
+      if (event.target.value.length < config.maxFieldLength[key]) {
+        updateEntry((prev) => {
+          const copy = { ...prev };
+          copy[key] = event.target.value;
+          return copy;
+        });
+      }
     };
   };
   const onTtlChange = (ttl) => {

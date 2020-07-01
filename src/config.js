@@ -12,6 +12,15 @@ const config = Object.freeze({
     initialCenter: [170, 22],
     initialZoom: [0.85],
   },
+  maxFieldLength: {
+    // somewhat arbitrary, but my About page, in HTML, about 3 times
+    // also helps approximate max entry size at about 10kB, or well under DDB and ES limits
+    text: 10000,
+    description: 30,
+    date: 20,
+    submitter: 20,
+    tags: 50,
+  },
 });
 
 export default config;
