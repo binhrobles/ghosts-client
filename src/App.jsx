@@ -1,6 +1,11 @@
 import React from 'react';
 import { Page } from '@zeit-ui/react';
-import { HashRouter as Router, Switch, Route } from 'react-router-dom';
+import {
+  HashRouter as Router,
+  Switch,
+  Redirect,
+  Route,
+} from 'react-router-dom';
 import { About, Reader, SpeakFlow, Footer, NavBar } from './Components/index';
 import Map from './Components/common/Map';
 import Entry from './common/Entry';
@@ -33,7 +38,7 @@ function App() {
   };
 
   return (
-    <Router basename="/ghosts-client/">
+    <Router basename="/">
       <Page size="large">
         <NavBar />
         <Page.Content>

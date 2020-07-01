@@ -14,7 +14,11 @@ const NavBar = () => {
     <Page.Header>
       <Row justify="space-between">
         <Tabs
-          initialValue={location.pathname}
+          initialValue={
+            location.pathname === '/'
+              ? APP_MODES.listen.pathname
+              : location.pathname
+          }
           onChange={onChangeHandler}
           hideDivider
         >
