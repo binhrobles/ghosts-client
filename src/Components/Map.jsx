@@ -1,22 +1,24 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { useLocation, useHistory } from 'react-router-dom';
 import ReactMapboxGl, { Layer, Feature } from 'react-mapbox-gl';
 import Geocoder from './Geocoder';
-import { APP_MODES } from '../common/constants';
 import config from '../config';
+import { APP_MODES } from '../common/constants';
 
 const Mapbox = ReactMapboxGl({
   accessToken: config.mapbox.publicAccessToken,
 });
 
-const Map = ({ mode, layerData, updateEntryLocation, onFeatureClicked }) => {
+const Map = ({ layerData, updateEntryLocation, onFeatureClicked }) => {
   const [points, updatePoints] = React.useState(layerData);
   const [currentMarkerCoords, updateCurrentMarker] = React.useState(null);
+  const location = useLocation();
 
   // if in `create` mode, clicking map should leave marker
-  // and report coordinates to parent
+  // report coordinates to parent
   const onMapClicked = (_, event) => {
-    if (mode === APP_MODES.create) {
+    if (location.pathname.includes(APP_MODES.speak.pathname)) {
       updateCurrentMarker([event.lngLat.lng, event.lngLat.lat]);
       updateEntryLocation({ lng: event.lngLat.lng, lat: event.lngLat.lat });
     }
@@ -60,7 +62,6 @@ const Map = ({ mode, layerData, updateEntryLocation, onFeatureClicked }) => {
 };
 
 Map.propTypes = {
-  mode: PropTypes.string.isRequired,
   layerData: PropTypes.array.isRequired,
   updateEntryLocation: PropTypes.func.isRequired,
   onFeatureClicked: PropTypes.func.isRequired,
