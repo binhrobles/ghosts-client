@@ -1,7 +1,7 @@
 export const APP_MODES = Object.freeze({
   listen: {
     name: 'listen',
-    pathname: '/',
+    pathname: '/listen',
   },
   speak: {
     name: 'speak',
