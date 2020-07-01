@@ -6,7 +6,7 @@ import {
   Route,
   Redirect,
 } from 'react-router-dom';
-import { Reader, SpeakFlow, Footer, NavBar } from './Components/index';
+import { About, Reader, SpeakFlow, Footer, NavBar } from './Components/index';
 import Map from './Components/common/Map';
 import Entry from './common/Entry';
 import useObjectWithSessionStorage from './common/useObjectWithSessionStorage';
@@ -61,6 +61,10 @@ function App() {
                 entry={draftEntry}
                 updateEntry={updateDraftEntry}
               />
+            </Route>
+
+            <Route path={APP_MODES.about.pathname}>
+              <About />
             </Route>
           </Switch>
         </Page.Content>

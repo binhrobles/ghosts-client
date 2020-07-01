@@ -26,6 +26,10 @@ const NavBar = () => {
             label={APP_MODES.speak.name}
             value={APP_MODES.speak.pathname}
           />
+          <Tabs.Item
+            label={APP_MODES.about.name}
+            value={APP_MODES.about.pathname}
+          />
         </Tabs>
         <Text h4>Shared Space</Text>
       </Row>

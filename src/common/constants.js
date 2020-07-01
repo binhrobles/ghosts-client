@@ -7,4 +7,8 @@ export const APP_MODES = Object.freeze({
     name: 'speak',
     pathname: '/speak',
   },
+  about: {
+    name: 'about',
+    pathname: '/about',
+  },
 });
