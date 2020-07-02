@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ReactMapboxGl, { Layer, Feature } from 'react-mapbox-gl';
 import Geocoder from './Geocoder';
+import Entry from '../../common/Entry';
 import config from '../../config';
 
 const Mapbox = ReactMapboxGl({
@@ -36,7 +37,7 @@ const Map = ({ layerData, updateEntryLocation, onFeatureClicked }) => {
       center={config.mapbox.initialCenter}
       zoom={config.mapbox.initialZoom}
       containerStyle={{
-        height: '75vh',
+        height: '70vh',
         width: '100%',
         borderRadius: '10px',
       }}
@@ -47,11 +48,11 @@ const Map = ({ layerData, updateEntryLocation, onFeatureClicked }) => {
 
       {/* existing entries */}
       <Layer type="circle">
-        {points.map((point, idx) => (
+        {points.map((point) => (
           <Feature
-            key={point}
-            properties={{ idx }}
-            coordinates={[point.lng, point.lat]}
+            key={point._id} // eslint-disable-line
+            properties={{ id: point._id }} // eslint-disable-line
+            coordinates={point.location}
             onClick={onFeatureClicked}
           />
         ))}
@@ -68,7 +69,7 @@ const Map = ({ layerData, updateEntryLocation, onFeatureClicked }) => {
 };
 
 Map.propTypes = {
-  layerData: PropTypes.array,
+  layerData: PropTypes.arrayOf(Entry),
   updateEntryLocation: PropTypes.func,
   onFeatureClicked: PropTypes.func,
 };

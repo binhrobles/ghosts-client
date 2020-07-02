@@ -4,16 +4,14 @@ import { Button, Card, Row } from '@zeit-ui/react';
 import Map from '../common/Map';
 import Editor from './Editor';
 import Metadata from './Metadata';
-import { CreateClient, CreateEntry } from '../../Http/entries';
+import { CreateEntry, EntriesClientContext } from '../../Http/entries';
 import Entry from '../../common/Entry';
-import config from '../../config';
 
 const STAGE = {
   LOCATION: 0,
   WRITING: 1,
   METADATA: 2,
 };
-let entriesClient = null;
 
 const ButtonComponent = ({ onClick, label }) => {
   return (
@@ -25,8 +23,7 @@ const ButtonComponent = ({ onClick, label }) => {
 
 const SpeakFlow = ({ updateEntryLocation, entry, updateEntry }) => {
   const [stage, updateStage] = React.useState(STAGE.LOCATION);
-
-  if (!entriesClient) entriesClient = CreateClient(config.baseURL);
+  const entriesClient = React.useContext(EntriesClientContext);
 
   const onSubmit = () => {
     console.log(entry);
@@ -34,6 +31,7 @@ const SpeakFlow = ({ updateEntryLocation, entry, updateEntry }) => {
     // assert text/description/location exist
     // assert date is parseable
     // clear session storage ?
+    // loading/confirmation screens
 
     // send to backend
     CreateEntry({ client: entriesClient, namespace: 'public', entry });

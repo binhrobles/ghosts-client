@@ -25,7 +25,7 @@ const Metadata = ({ entry, updateEntry }) => {
       <Grid xs={24}>
         <Input
           label="When it happened"
-          size="mini"
+          size="small"
           value={entry.date}
           onChange={onAttributeChange('date')}
           placeholder="May 27, 2007"
@@ -35,7 +35,7 @@ const Metadata = ({ entry, updateEntry }) => {
       <Grid xs={24}>
         <Input
           label="Left by"
-          size="mini"
+          size="small"
           value={entry.submitter}
           onChange={onAttributeChange('submitter')}
           placeholder="Anonymous"
@@ -49,7 +49,7 @@ const Metadata = ({ entry, updateEntry }) => {
           </Text>
           <Spacer x={2} />
           <Radio.Group
-            size="mini"
+            size="small"
             value={entry.ttl}
             onChange={onTtlChange}
             useRow

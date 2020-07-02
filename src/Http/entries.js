@@ -1,5 +1,8 @@
+import { createContext } from 'react';
 import axios from 'axios';
 import handleError from '../common/handleError';
+
+export const EntriesClientContext = createContext();
 
 export const CreateClient = (baseURL) => {
   return axios.create({
