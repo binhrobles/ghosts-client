@@ -5,7 +5,7 @@ import Entry from '../common/Entry';
 
 const Reader = ({ isOpen, onClose, entry }) => {
   return (
-    <Modal width="60vw" open={isOpen} onClose={onClose}>
+    <Modal width="70vw" open={isOpen} onClose={onClose}>
       <Modal.Title>6/29/2007</Modal.Title>
       <Modal.Content>
         <Card
@@ -15,7 +15,7 @@ const Reader = ({ isOpen, onClose, entry }) => {
             borderRadius: '10px',
           }}
         >
-          <Text>{entry.text}</Text>
+          <Text>{entry._id}</Text>
         </Card>
       </Modal.Content>
     </Modal>

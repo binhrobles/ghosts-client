@@ -16,7 +16,6 @@ import {
 } from './Http/entries';
 import useObjectWithLocalStorage from './common/useObjectWithLocalStorage';
 import { APP_MODES } from './common/constants';
-import entryPlaceholder from './entryPlaceholder';
 import config from './config';
 
 let entriesClient = null;
@@ -42,8 +41,6 @@ function App() {
         client: entriesClient,
         namespace,
       });
-
-      console.log(`Pulled entries: ${JSON.stringify(entries, null, 2)}`);
 
       if (isMounted) {
         updateLoadedEntries(entries);
@@ -79,7 +76,7 @@ function App() {
                 path="/(listen|speak)/"
                 render={({ location }) => (
                   <Map
-                    location={location}
+                    pathname={location.pathname}
                     onFeatureClicked={onEntryClicked}
                     layerData={loadedEntries}
                     updateEntryLocation={updateEntryLocation}
@@ -94,7 +91,7 @@ function App() {
                 <Reader
                   isOpen={isReading}
                   onClose={readerCloseHandler}
-                  entry={entryPlaceholder}
+                  entry={selectedEntry}
                 />
               </Route>
 

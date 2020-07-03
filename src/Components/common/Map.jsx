@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ReactMapboxGl, { Layer, Feature } from 'react-mapbox-gl';
 import Geocoder from './Geocoder';
+import { APP_MODES } from '../../common/constants';
 import config from '../../config';
 
 const Mapbox = ReactMapboxGl({
@@ -15,8 +16,12 @@ const getLastMarkerCoords = () => {
   return [entry.location.lng, entry.location.lat];
 };
 
-const Map = ({ layerData, updateEntryLocation, onFeatureClicked }) => {
-  const [points, updatePoints] = React.useState(layerData);
+const Map = ({
+  pathname,
+  layerData,
+  updateEntryLocation,
+  onFeatureClicked,
+}) => {
   const [currentMarkerCoords, updateCurrentMarker] = React.useState(
     getLastMarkerCoords()
   );
@@ -24,12 +29,21 @@ const Map = ({ layerData, updateEntryLocation, onFeatureClicked }) => {
   // if in `create` mode, clicking map should leave marker
   // report coordinates to parent
   const onMapClicked = (_, event) => {
-    if (updateEntryLocation) {
+    if (pathname === APP_MODES.speak.pathname) {
       const wrappedCoords = event.lngLat.wrap();
       updateCurrentMarker([wrappedCoords.lng, wrappedCoords.lat]);
       updateEntryLocation({ ...wrappedCoords });
     }
   };
+
+  const features = layerData.map((point) => (
+    <Feature
+      key={point._id} // eslint-disable-line
+      properties={{ id: point._id }} // eslint-disable-line
+      coordinates={point._source.location} // eslint-disable-line
+      onClick={onFeatureClicked}
+    />
+  ));
 
   return (
     <Mapbox
@@ -47,16 +61,7 @@ const Map = ({ layerData, updateEntryLocation, onFeatureClicked }) => {
       <Geocoder />
 
       {/* existing entries */}
-      <Layer type="circle">
-        {points.map((point) => (
-          <Feature
-            key={point._id} // eslint-disable-line
-            properties={{ id: point._id }} // eslint-disable-line
-            coordinates={point.location}
-            onClick={onFeatureClicked}
-          />
-        ))}
-      </Layer>
+      <Layer type="circle">{features}</Layer>
 
       {/* marker set for leaving a entry */}
       {currentMarkerCoords && (
@@ -69,7 +74,7 @@ const Map = ({ layerData, updateEntryLocation, onFeatureClicked }) => {
 };
 
 Map.propTypes = {
-  location: PropTypes.shape({ pathname: PropTypes.string }).isRequired,
+  pathname: PropTypes.string.isRequired,
   layerData: PropTypes.arrayOf(
     PropTypes.shape({
       _id: PropTypes.string,
