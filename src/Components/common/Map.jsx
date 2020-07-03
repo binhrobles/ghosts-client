@@ -26,8 +26,9 @@ const Map = ({ layerData, updateEntryLocation, onFeatureClicked }) => {
   // report coordinates to parent
   const onMapClicked = (_, event) => {
     if (updateEntryLocation) {
-      updateCurrentMarker([event.lngLat.lng, event.lngLat.lat]);
-      updateEntryLocation({ lng: event.lngLat.lng, lat: event.lngLat.lat });
+      const wrappedCoords = event.lngLat.wrap();
+      updateCurrentMarker([wrappedCoords.lng, wrappedCoords.lat]);
+      updateEntryLocation({ ...wrappedCoords });
     }
   };
 
