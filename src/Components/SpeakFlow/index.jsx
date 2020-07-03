@@ -1,17 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button, Card, Row } from '@zeit-ui/react';
-import Map from '../common/Map';
+import { useHistory } from 'react-router-dom';
+import { Button, Card, Row, Spacer, useToasts } from '@zeit-ui/react';
 import Editor from './Editor';
 import Metadata from './Metadata';
 import { CreateEntry, EntriesClientContext } from '../../Http/entries';
 import Entry from '../../common/Entry';
-
-const STAGE = {
-  LOCATION: 0,
-  WRITING: 1,
-  METADATA: 2,
-};
+import { APP_MODES } from '../../common/constants';
 
 const ButtonComponent = ({ onClick, label }) => {
   return (
@@ -21,76 +16,54 @@ const ButtonComponent = ({ onClick, label }) => {
   );
 };
 
-const SpeakFlow = ({ updateEntryLocation, entry, updateEntry }) => {
-  const [stage, updateStage] = React.useState(STAGE.LOCATION);
+const SpeakFlow = ({ entry, updateEntry }) => {
+  const [, setToast] = useToasts();
   const entriesClient = React.useContext(EntriesClientContext);
+  const history = useHistory();
 
-  const onSubmit = () => {
-    console.log(entry);
+  const onSubmit = async () => {
     // TODO
     // assert text/description/location exist
-    // assert date is parseable
-    // clear session storage ?
-    // loading/confirmation screens
+    // loading indication screens
 
     // send to backend
-    CreateEntry({ client: entriesClient, namespace: 'public', entry });
+    if (
+      await CreateEntry({ client: entriesClient, namespace: 'public', entry })
+    ) {
+      setToast({ text: 'Thanks for sharing.' });
+
+      // reset local storage + state
+      updateEntry(new Entry());
+
+      // redirect back to home
+      history.push(APP_MODES.listen.pathname);
+    } else {
+      setToast({
+        type: 'error',
+        text: 'There was an issue trying to save this ☹️',
+      });
+    }
   };
 
-  if (stage === STAGE.LOCATION) {
-    return (
-      <Card>
-        <Map updateEntryLocation={updateEntryLocation} />
+  return (
+    <>
+      <Card style={{ marginTop: '2vh' }}>
+        <h4>Leave Something</h4>
+        <Spacer y={1} />
+        <Editor entry={entry} updateEntry={updateEntry} />
+        <Spacer y={1} />
+        <Metadata entry={entry} updateEntry={updateEntry} />
         <Card.Footer>
           <Row style={{ width: '100%' }} justify="end">
-            <ButtonComponent
-              label="Continue"
-              onClick={() => updateStage(STAGE.WRITING)}
-            />
+            <ButtonComponent label="Submit" onClick={onSubmit} />
           </Row>
         </Card.Footer>
       </Card>
-    );
-  }
-
-  if (stage === STAGE.WRITING) {
-    return (
-      <Card>
-        <Editor entry={entry} updateEntry={updateEntry} />
-        <Card.Footer>
-          <Row style={{ width: '100%' }} justify="space-between">
-            <ButtonComponent
-              label="Back"
-              onClick={() => updateStage(STAGE.LOCATION)}
-            />
-            <ButtonComponent
-              label="Continue"
-              onClick={() => updateStage(STAGE.METADATA)}
-            />
-          </Row>
-        </Card.Footer>
-      </Card>
-    );
-  }
-
-  return (
-    <Card>
-      <Metadata entry={entry} updateEntry={updateEntry} />
-      <Card.Footer>
-        <Row style={{ width: '100%' }} justify="space-between">
-          <ButtonComponent
-            label="Back"
-            onClick={() => updateStage(STAGE.WRITING)}
-          />
-          <ButtonComponent label="Submit" onClick={onSubmit} />
-        </Row>
-      </Card.Footer>
-    </Card>
+    </>
   );
 };
 
 SpeakFlow.propTypes = {
-  updateEntryLocation: PropTypes.func.isRequired,
   entry: PropTypes.instanceOf(Entry).isRequired,
   updateEntry: PropTypes.func.isRequired,
 };

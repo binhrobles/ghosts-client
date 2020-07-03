@@ -11,7 +11,7 @@ export default function Entry() {
     lat: 0.0,
     lng: 0.0,
   };
-  this.ttl = TTL.WEEK;
+  this.ttl = TTL.NEVER;
   this.date = ''; // optional
   this.submitter = 'anon'; // optional
   this.tags = []; // optional

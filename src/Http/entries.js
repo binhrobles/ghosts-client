@@ -14,8 +14,10 @@ export const CreateClient = (baseURL) => {
 export const CreateEntry = async ({ client, namespace, entry }) => {
   try {
     await client.post(`namespace/${namespace}/entry`, entry);
+    return true;
   } catch (e) {
     handleError(e.response);
+    return false;
   }
 };
 

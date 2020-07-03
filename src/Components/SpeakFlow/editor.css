@@ -1,8 +1,9 @@
 .ql-editor {
-  min-height: 70vh;
+  min-height: 50vh;
 }
 
 /* for dark theme */
 .ql-editor.ql-blank::before {
   color: #888888;
+  padding-left: inherit;
 }

@@ -14,7 +14,7 @@ import {
   GetRecentEntries,
   EntriesClientContext,
 } from './Http/entries';
-import useObjectWithSessionStorage from './common/useObjectWithSessionStorage';
+import useObjectWithLocalStorage from './common/useObjectWithLocalStorage';
 import { APP_MODES } from './common/constants';
 import entryPlaceholder from './entryPlaceholder';
 import config from './config';
@@ -23,7 +23,7 @@ let entriesClient = null;
 
 function App() {
   const [isReading, setIsReading] = React.useState(false);
-  const [draftEntry, updateDraftEntry] = useObjectWithSessionStorage('entry');
+  const [draftEntry, updateDraftEntry] = useObjectWithLocalStorage('entry');
   const [loadedEntries, updateLoadedEntries] = React.useState([]);
   const [selectedEntry, updateSelectedEntry] = React.useState(null);
   const namespace = 'public';
@@ -42,6 +42,8 @@ function App() {
         client: entriesClient,
         namespace,
       });
+
+      console.log(`Pulled entries: ${JSON.stringify(entries, null, 2)}`);
 
       if (isMounted) {
         updateLoadedEntries(entries);
@@ -73,6 +75,18 @@ function App() {
         <Page.Content>
           <Switch>
             <EntriesClientContext.Provider value={entriesClient}>
+              <Route
+                path="/(listen|speak)/"
+                render={({ location }) => (
+                  <Map
+                    location={location}
+                    onFeatureClicked={onEntryClicked}
+                    layerData={loadedEntries}
+                    updateEntryLocation={updateEntryLocation}
+                  />
+                )}
+              />
+
               <Route exact path="/">
                 <Redirect to={APP_MODES.listen.pathname} />
               </Route>
@@ -82,18 +96,10 @@ function App() {
                   onClose={readerCloseHandler}
                   entry={entryPlaceholder}
                 />
-                <Map
-                  layerData={loadedEntries}
-                  onFeatureClicked={onEntryClicked}
-                />
               </Route>
 
               <Route path={APP_MODES.speak.pathname}>
-                <SpeakFlow
-                  updateEntryLocation={updateEntryLocation}
-                  entry={draftEntry}
-                  updateEntry={updateDraftEntry}
-                />
+                <SpeakFlow entry={draftEntry} updateEntry={updateDraftEntry} />
               </Route>
 
               <Route path={APP_MODES.about.pathname}>

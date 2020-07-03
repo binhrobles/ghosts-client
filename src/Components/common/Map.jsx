@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ReactMapboxGl, { Layer, Feature } from 'react-mapbox-gl';
 import Geocoder from './Geocoder';
-import Entry from '../../common/Entry';
 import config from '../../config';
 
 const Mapbox = ReactMapboxGl({
@@ -70,15 +69,14 @@ const Map = ({ layerData, updateEntryLocation, onFeatureClicked }) => {
 };
 
 Map.propTypes = {
-  layerData: PropTypes.arrayOf(Entry),
-  updateEntryLocation: PropTypes.func,
-  onFeatureClicked: PropTypes.func,
-};
-
-Map.defaultProps = {
-  layerData: [],
-  updateEntryLocation: null,
-  onFeatureClicked: null,
+  location: PropTypes.shape({ pathname: PropTypes.string }).isRequired,
+  layerData: PropTypes.arrayOf(
+    PropTypes.shape({
+      _id: PropTypes.string,
+    })
+  ).isRequired,
+  updateEntryLocation: PropTypes.func.isRequired,
+  onFeatureClicked: PropTypes.func.isRequired,
 };
 
 export default Map;

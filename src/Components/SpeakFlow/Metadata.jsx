@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Container, Grid, Input, Radio, Text, Spacer } from '@zeit-ui/react';
-import Entry, { TTL } from '../../common/Entry';
+import { Input, Spacer } from '@zeit-ui/react';
+import Entry from '../../common/Entry';
 import config from '../../config';
 
 const Metadata = ({ entry, updateEntry }) => {
@@ -16,51 +16,33 @@ const Metadata = ({ entry, updateEntry }) => {
       }
     };
   };
-  const onTtlChange = (ttl) => {
-    updateEntry((prev) => ({ ...prev, ttl }));
-  };
 
   return (
-    <Grid.Container>
-      <Grid xs={24}>
-        <Input
-          label="When it happened"
-          size="small"
-          value={entry.date}
-          onChange={onAttributeChange('date')}
-          placeholder="May 27, 2007"
-        />
-      </Grid>
-      <Spacer x={1} />
-      <Grid xs={24}>
-        <Input
-          label="Left by"
-          size="small"
-          value={entry.submitter}
-          onChange={onAttributeChange('submitter')}
-          placeholder="Anonymous"
-        />
-      </Grid>
-      <Spacer x={1} />
-      <Grid xs={24}>
-        <Container>
-          <Text span size="12px" type="secondary">
-            Disappears
-          </Text>
-          <Spacer x={2} />
-          <Radio.Group
-            size="small"
-            value={entry.ttl}
-            onChange={onTtlChange}
-            useRow
-          >
-            <Radio value={TTL.WEEK}>in a week</Radio>
-            <Radio value={TTL.MONTH}>in a month</Radio>
-            <Radio value={TTL.NEVER}>never</Radio>
-          </Radio.Group>
-        </Container>
-      </Grid>
-    </Grid.Container>
+    <>
+      <Input
+        label="Titled"
+        size="small"
+        value={entry.description}
+        onChange={onAttributeChange('description')}
+        placeholder="Title"
+      />
+      <Spacer y={0.5} />
+      <Input
+        label="When?"
+        size="small"
+        value={entry.date}
+        onChange={onAttributeChange('date')}
+        placeholder="May 27, 2007"
+      />
+      <Spacer y={0.5} />
+      <Input
+        label="Left by"
+        size="small"
+        value={entry.submitter}
+        onChange={onAttributeChange('submitter')}
+        placeholder="anon"
+      />
+    </>
   );
 };
 
