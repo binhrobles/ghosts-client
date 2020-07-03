@@ -1,12 +1,36 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Card, Text, Modal } from '@zeit-ui/react';
-import Entry from '../common/Entry';
+import { GetEntryById, EntriesClientContext } from '../Http/entries';
 
-const Reader = ({ isOpen, onClose, entry }) => {
+const Reader = ({ isOpen, onClose, namespace, entryId }) => {
+  const [entry, setEntry] = React.useState(null);
+  const [isLoading, setLoading] = React.useState(true);
+  const entriesClient = React.useContext(EntriesClientContext);
+
+  // Downloads new entry on prop change
+  React.useEffect(() => {
+    let isMounted = true;
+    (async () => {
+      const downloaded = await GetEntryById({
+        client: entriesClient,
+        namespace,
+        id: entryId,
+      });
+
+      if (isMounted) {
+        setLoading(false);
+        setEntry(downloaded);
+      }
+    })();
+    return () => {
+      isMounted = false;
+    };
+  }, [entryId]);
+
   return (
     <Modal width="70vw" open={isOpen} onClose={onClose}>
-      <Modal.Title>6/29/2007</Modal.Title>
+      <Modal.Title>entry._source.description</Modal.Title>
       <Modal.Content>
         <Card
           style={{
@@ -15,7 +39,7 @@ const Reader = ({ isOpen, onClose, entry }) => {
             borderRadius: '10px',
           }}
         >
-          <Text>{entry._id}</Text>
+          <Text>{entry._source.text}</Text>
         </Card>
       </Modal.Content>
     </Modal>
@@ -25,7 +49,8 @@ const Reader = ({ isOpen, onClose, entry }) => {
 Reader.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-  entry: PropTypes.instanceOf(Entry).isRequired,
+  namespace: PropTypes.string.isRequired,
+  entryId: PropTypes.string.isRequired,
 };
 
 export default Reader;

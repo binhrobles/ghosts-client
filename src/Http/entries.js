@@ -21,6 +21,16 @@ export const CreateEntry = async ({ client, namespace, entry }) => {
   }
 };
 
+export const GetEntryById = async ({ client, namespace, id }) => {
+  try {
+    const response = await client.get(`namespace/${namespace}/entry/${id}`);
+    return response.data;
+  } catch (e) {
+    handleError(e.response);
+    return null;
+  }
+};
+
 export const GetRecentEntries = async ({ client, namespace }) => {
   try {
     const response = await client.get(`namespace/${namespace}/entries`);

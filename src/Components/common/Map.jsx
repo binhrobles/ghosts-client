@@ -38,9 +38,9 @@ const Map = ({
 
   const features = layerData.map((point) => (
     <Feature
-      key={point._id} // eslint-disable-line
-      properties={{ id: point._id }} // eslint-disable-line
-      coordinates={point._source.location} // eslint-disable-line
+      key={point._id}
+      properties={{ id: point._id }}
+      coordinates={point._source.location}
       onClick={onFeatureClicked}
     />
   ));

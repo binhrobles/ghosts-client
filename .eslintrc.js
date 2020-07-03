@@ -5,16 +5,19 @@ module.exports = {
     jest: true,
   },
   extends: [
-    "airbnb",
-    "eslint:recommended",
-    "plugin:react/recommended",
-    "plugin:prettier/recommended",
+    'airbnb',
+    'eslint:recommended',
+    'plugin:react/recommended',
+    'plugin:prettier/recommended',
   ],
   parserOptions: {
     ecmaFeatures: {
       jsx: true,
     },
     ecmaVersion: 2018,
-    sourceType: "module",
+    sourceType: 'module',
+  },
+  rules: {
+    'no-underscore-dangle': 'off',
   },
 };

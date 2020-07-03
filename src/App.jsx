@@ -24,7 +24,7 @@ function App() {
   const [isReading, setIsReading] = React.useState(false);
   const [draftEntry, updateDraftEntry] = useObjectWithLocalStorage('entry');
   const [loadedEntries, updateLoadedEntries] = React.useState([]);
-  const [selectedEntry, updateSelectedEntry] = React.useState(null);
+  const [selectedEntryId, updateSelectedEntryId] = React.useState(null);
   const namespace = 'public';
 
   if (!draftEntry) updateDraftEntry(new Entry());
@@ -56,8 +56,7 @@ function App() {
   };
 
   const onEntryClicked = (event) => {
-    console.log(`feature ${event.feature.properties.id} clicked`);
-    updateSelectedEntry(event.feature.properties.id);
+    updateSelectedEntryId(event.feature.properties.id);
     setIsReading(true);
   };
 
@@ -91,7 +90,7 @@ function App() {
                 <Reader
                   isOpen={isReading}
                   onClose={readerCloseHandler}
-                  entry={selectedEntry}
+                  entryId={selectedEntryId}
                 />
               </Route>
 
