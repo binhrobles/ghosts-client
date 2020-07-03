@@ -1,6 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Card, Text, Modal, Loading } from '@zeit-ui/react';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.bubble.css';
+import './SpeakFlow/editor.css';
+import { Modal, Loading } from '@zeit-ui/react';
 import { GetEntryById, EntriesClientContext } from '../Http/entries';
 
 const Reader = ({ isOpen, onClose, namespace, entryId }) => {
@@ -30,19 +33,31 @@ const Reader = ({ isOpen, onClose, namespace, entryId }) => {
     };
   }, [entryId, namespace, entriesClient]);
 
+  const loadingRender = (
+    <>
+      <Modal.Title>Loading</Modal.Title>
+      <Modal.Content>
+        <Loading type="secondary" size="large" />
+      </Modal.Content>
+    </>
+  );
+
   const entryRender = entry ? (
     <>
       <Modal.Title>{entry.description}</Modal.Title>
-      <Modal.Content>
-        <Card
-          style={{
-            maxHeight: '50vh',
-            overflow: 'scroll',
-            borderRadius: '10px',
-          }}
-        >
-          <Text>{entry.text}</Text>
-        </Card>
+      <Modal.Content
+        style={{
+          maxHeight: '50vh',
+          overflow: 'scroll',
+          borderRadius: '10px',
+        }}
+      >
+        <ReactQuill
+          theme="bubble"
+          preserveWhitespace
+          value={entry.text}
+          readOnly
+        />
       </Modal.Content>
     </>
   ) : (
@@ -55,15 +70,8 @@ const Reader = ({ isOpen, onClose, namespace, entryId }) => {
   );
 
   return (
-    <Modal width="70vw" open={isOpen} onClose={onClose}>
-      {isLoading && (
-        <>
-          <Modal.Title>Loading</Modal.Title>
-          <Modal.Content>
-            <Loading type="secondary" size="large" />
-          </Modal.Content>
-        </>
-      )}
+    <Modal open={isOpen} onClose={onClose}>
+      {isLoading && loadingRender}
       {isLoading || entryRender}
     </Modal>
   );

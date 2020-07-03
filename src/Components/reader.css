@@ -1,0 +1,4 @@
+/* for dark theme */
+.ql-editor.ql-blank::before {
+  color: #888888;
+}
