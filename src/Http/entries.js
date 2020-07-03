@@ -15,7 +15,7 @@ export const CreateEntry = async ({ client, namespace, entry }) => {
   try {
     await client.post(`namespace/${namespace}/entry`, entry);
   } catch (e) {
-    handleError(e);
+    handleError(e.response);
   }
 };
 
@@ -24,7 +24,7 @@ export const GetRecentEntries = async ({ client, namespace }) => {
     const response = await client.get(`namespace/${namespace}/entries`);
     return response.data;
   } catch (e) {
-    handleError(e);
+    handleError(e.response);
     return [];
   }
 };
