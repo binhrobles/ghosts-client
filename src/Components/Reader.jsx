@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.bubble.css';
-import './SpeakFlow/editor.css';
+import './reader.css';
 import { Modal, Loading } from '@zeit-ui/react';
 import { GetEntryById, EntriesClientContext } from '../Http/entries';
 
