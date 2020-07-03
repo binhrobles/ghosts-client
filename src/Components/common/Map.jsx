@@ -36,10 +36,11 @@ const Map = ({
     }
   };
 
+  // properties will be passed to the onEntryClicked func
   const features = layerData.map((point) => (
     <Feature
       key={point._id}
-      properties={{ id: point._id }}
+      properties={{ entryId: point._id }}
       coordinates={point._source.location}
       onClick={onFeatureClicked}
     />

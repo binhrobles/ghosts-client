@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Card, Text, Modal } from '@zeit-ui/react';
+import { Card, Text, Modal, Loading } from '@zeit-ui/react';
 import { GetEntryById, EntriesClientContext } from '../Http/entries';
 
 const Reader = ({ isOpen, onClose, namespace, entryId }) => {
@@ -11,6 +11,8 @@ const Reader = ({ isOpen, onClose, namespace, entryId }) => {
   // Downloads new entry on prop change
   React.useEffect(() => {
     let isMounted = true;
+    setLoading(true);
+
     (async () => {
       const downloaded = await GetEntryById({
         client: entriesClient,
@@ -26,11 +28,11 @@ const Reader = ({ isOpen, onClose, namespace, entryId }) => {
     return () => {
       isMounted = false;
     };
-  }, [entryId]);
+  }, [entryId, namespace, entriesClient]);
 
-  return (
-    <Modal width="70vw" open={isOpen} onClose={onClose}>
-      <Modal.Title>entry._source.description</Modal.Title>
+  const entryRender = entry ? (
+    <>
+      <Modal.Title>{entry.description}</Modal.Title>
       <Modal.Content>
         <Card
           style={{
@@ -39,9 +41,30 @@ const Reader = ({ isOpen, onClose, namespace, entryId }) => {
             borderRadius: '10px',
           }}
         >
-          <Text>{entry._source.text}</Text>
+          <Text>{entry.text}</Text>
         </Card>
       </Modal.Content>
+    </>
+  ) : (
+    <>
+      <Modal.Title>Yikes</Modal.Title>
+      <Modal.Content>
+        <p>We had some problems finding that...</p>
+      </Modal.Content>
+    </>
+  );
+
+  return (
+    <Modal width="70vw" open={isOpen} onClose={onClose}>
+      {isLoading && (
+        <>
+          <Modal.Title>Loading</Modal.Title>
+          <Modal.Content>
+            <Loading type="secondary" size="large" />
+          </Modal.Content>
+        </>
+      )}
+      {isLoading || entryRender}
     </Modal>
   );
 };

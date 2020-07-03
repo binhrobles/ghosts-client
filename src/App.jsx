@@ -56,7 +56,7 @@ function App() {
   };
 
   const onEntryClicked = (event) => {
-    updateSelectedEntryId(event.feature.properties.id);
+    updateSelectedEntryId(event.feature.properties.entryId);
     setIsReading(true);
   };
 
@@ -90,6 +90,7 @@ function App() {
                 <Reader
                   isOpen={isReading}
                   onClose={readerCloseHandler}
+                  namespace={namespace}
                   entryId={selectedEntryId}
                 />
               </Route>
