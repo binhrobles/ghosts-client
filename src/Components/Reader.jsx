@@ -42,32 +42,34 @@ const Reader = ({ isOpen, onClose, namespace, entryId }) => {
     </>
   );
 
-  const entryRender = entry ? (
-    <>
-      <Modal.Title>{entry.description}</Modal.Title>
-      <Modal.Content
-        style={{
-          maxHeight: '50vh',
-          overflow: 'scroll',
-          borderRadius: '10px',
-        }}
-      >
-        <ReactQuill
-          theme="bubble"
-          preserveWhitespace
-          value={entry.text}
-          readOnly
-        />
-      </Modal.Content>
-    </>
-  ) : (
-    <>
-      <Modal.Title>Yikes</Modal.Title>
-      <Modal.Content>
-        <p>We had some problems finding that...</p>
-      </Modal.Content>
-    </>
-  );
+  const entryRender =
+    entry && entry.text ? (
+      <>
+        <Modal.Title>{entry.description}</Modal.Title>
+        <Modal.Content
+          style={{
+            maxHeight: '50vh',
+            overflow: 'scroll',
+            borderRadius: '10px',
+          }}
+        >
+          <ReactQuill
+            theme="bubble"
+            preserveWhitespace
+            value={entry.text}
+            readOnly
+          />
+        </Modal.Content>
+      </>
+    ) : (
+      <>
+        <Modal.Title>Yikes</Modal.Title>
+        <Modal.Content>
+          <p>We had some problems finding that...</p>
+          <p>Entry ID: {entryId}</p>
+        </Modal.Content>
+      </>
+    );
 
   return (
     <Modal open={isOpen} onClose={onClose}>
