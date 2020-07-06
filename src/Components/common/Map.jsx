@@ -62,7 +62,6 @@ const Map = ({
         height: '70vh',
         width: '100%',
         borderRadius: '2%',
-        marginRight: '1%',
       }}
       onClick={onMapClicked}
     >

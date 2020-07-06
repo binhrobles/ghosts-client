@@ -1,5 +1,5 @@
 import React from 'react';
-import { Page } from '@zeit-ui/react';
+import { Grid, Page } from '@zeit-ui/react';
 import {
   HashRouter as Router,
   Switch,
@@ -71,22 +71,25 @@ function App() {
         <Page.Content>
           <Switch>
             <EntriesClientContext.Provider value={entriesClient}>
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'stretch',
-                  justifyContent: 'space-between',
-                }}
-              >
+              <Grid.Container gap={2}>
+                {/* on xs screens, take full width in all modes */}
+                {/* on md screens, take half width in speak mode */}
                 <Route
                   path="/(listen|speak)/"
                   render={({ location }) => (
-                    <Map
-                      pathname={location.pathname}
-                      onFeatureClicked={onEntryClicked}
-                      layerData={loadedEntries}
-                      updateEntryLocation={updateEntryLocation}
-                    />
+                    <Grid
+                      xs={24}
+                      md={
+                        location.pathname === APP_MODES.speak.pathname ? 12 : 24
+                      }
+                    >
+                      <Map
+                        pathname={location.pathname}
+                        onFeatureClicked={onEntryClicked}
+                        layerData={loadedEntries}
+                        updateEntryLocation={updateEntryLocation}
+                      />
+                    </Grid>
                   )}
                 />
 
@@ -94,21 +97,25 @@ function App() {
                   <Redirect to={APP_MODES.listen.pathname} />
                 </Route>
                 <Route path={APP_MODES.listen.pathname}>
-                  <Reader
-                    isOpen={isReading}
-                    onClose={readerCloseHandler}
-                    namespace={namespace}
-                    entryId={selectedEntryId}
-                  />
+                  <Grid xs={24}>
+                    <Reader
+                      isOpen={isReading}
+                      onClose={readerCloseHandler}
+                      namespace={namespace}
+                      entryId={selectedEntryId}
+                    />
+                  </Grid>
                 </Route>
 
-                <Route path={APP_MODES.speak.pathname}>
-                  <SpeakFlow
-                    entry={draftEntry}
-                    updateEntry={updateDraftEntry}
-                  />
-                </Route>
-              </div>
+                <Grid xs={24} md={12}>
+                  <Route path={APP_MODES.speak.pathname}>
+                    <SpeakFlow
+                      entry={draftEntry}
+                      updateEntry={updateDraftEntry}
+                    />
+                  </Route>
+                </Grid>
+              </Grid.Container>
 
               <Route path={APP_MODES.about.pathname}>
                 <About />
