@@ -1,12 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
-import { Button, Card, Row, Spacer, useToasts } from '@zeit-ui/react';
+import { Button, Card, Row, Input, Spacer, useToasts } from '@zeit-ui/react';
 import Editor from './Editor';
-import Metadata from './Metadata';
 import { CreateEntry, EntriesClientContext } from '../../Http/entries';
 import Entry from '../../common/Entry';
 import { APP_MODES } from '../../common/constants';
+import config from '../../config';
 
 const ButtonComponent = ({ onClick, label }) => {
   return (
@@ -20,6 +20,18 @@ const SpeakFlow = ({ entry, updateEntry }) => {
   const [, setToast] = useToasts();
   const entriesClient = React.useContext(EntriesClientContext);
   const history = useHistory();
+
+  const onAttributeChange = (key) => {
+    return (event) => {
+      if (event.target.value.length < config.maxFieldLength[key]) {
+        updateEntry((prev) => {
+          const copy = { ...prev };
+          copy[key] = event.target.value;
+          return copy;
+        });
+      }
+    };
+  };
 
   const onSubmit = async () => {
     // TODO
@@ -48,11 +60,23 @@ const SpeakFlow = ({ entry, updateEntry }) => {
   return (
     <>
       <Card>
-        <h4>Leave Something</h4>
+        <Input
+          label="Titled"
+          size="small"
+          value={entry.description}
+          onChange={onAttributeChange('description')}
+          placeholder="Title"
+        />
         <Spacer y={1} />
         <Editor entry={entry} updateEntry={updateEntry} />
         <Spacer y={1} />
-        <Metadata entry={entry} updateEntry={updateEntry} />
+        <Input
+          label="Left by"
+          size="small"
+          value={entry.submitter}
+          onChange={onAttributeChange('submitter')}
+          placeholder="anon"
+        />
         <Card.Footer>
           <Row style={{ width: '100%' }} justify="end">
             <ButtonComponent label="Submit" onClick={onSubmit} />

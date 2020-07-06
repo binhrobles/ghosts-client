@@ -24,7 +24,7 @@ const Editor = ({ entry, updateEntry }) => {
     <ReactQuill
       theme="bubble"
       preserveWhitespace
-      placeholder="What were you remembering?"
+      placeholder="Leave something"
       value={entry.text}
       onChange={onTextChange}
     />
