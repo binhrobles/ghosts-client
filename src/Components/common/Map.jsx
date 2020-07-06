@@ -44,7 +44,6 @@ const Map = ({
   // when zoomed out, should use simple map
   // when zoomed in, should use satellite imagery
   const onZoomEnd = (map) => {
-    console.log(map.getZoom());
     if (
       map.getZoom() > config.mapbox.transitionZoom &&
       map.style !== config.mapbox.style.satellite
@@ -87,7 +86,9 @@ const Map = ({
       <Geocoder />
 
       {/* existing entries */}
-      <Layer type="circle">{features}</Layer>
+      <Layer type="circle" paint={{ 'circle-color': '#F81CE5' }}>
+        {features}
+      </Layer>
 
       {/* marker set for leaving a entry */}
       {currentMarkerCoords && (
