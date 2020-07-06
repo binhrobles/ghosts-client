@@ -6,8 +6,10 @@ const config = Object.freeze({
   googleClientId: '',
   mapbox: {
     style: {
-      dark: 'mapbox://styles/binhrobles/ckc9tdec23p3s1hn1c71nxh53',
+      dark: 'mapbox://styles/binhrobles/ckbrgp26q1gdk1imt419e9bw8',
+      satellite: 'mapbox://styles/binhrobles/ckc9tdec23p3s1hn1c71nxh53',
     },
+    transitionZoom: 14,
     publicAccessToken: process.env.REACT_APP_MAPBOX_PUBLIC_ACCESS_TOKEN,
     initialCenter: [170, 22],
     initialZoom: [0.85],

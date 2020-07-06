@@ -41,6 +41,23 @@ const Map = ({
     }
   };
 
+  // when zoomed out, should use simple map
+  // when zoomed in, should use satellite imagery
+  const onZoomEnd = (map) => {
+    console.log(map.getZoom());
+    if (
+      map.getZoom() > config.mapbox.transitionZoom &&
+      map.style !== config.mapbox.style.satellite
+    ) {
+      map.setStyle(config.mapbox.style.satellite);
+    } else if (
+      map.getZoom() <= config.mapbox.transitionZoom &&
+      map.style !== config.mapbox.style.dark
+    ) {
+      map.setStyle(config.mapbox.style.dark);
+    }
+  };
+
   // properties will be passed to the onEntryClicked func
   const features = layerData.map((point) => (
     <Feature
@@ -58,12 +75,13 @@ const Map = ({
       longitude={viewport.longitude}
       zoom={viewport.zoom}
       onViewportChange={setViewport}
+      onZoomEnd={onZoomEnd}
+      onClick={onMapClicked}
       containerStyle={{
         height: '70vh',
         width: '100%',
         borderRadius: '2%',
       }}
-      onClick={onMapClicked}
     >
       {/* search bar */}
       <Geocoder />
