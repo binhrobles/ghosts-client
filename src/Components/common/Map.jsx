@@ -7,6 +7,7 @@ import config from '../../config';
 
 const Mapbox = ReactMapboxGl({
   accessToken: config.mapbox.publicAccessToken,
+  minZoom: config.mapbox.minZoom,
 });
 
 const getLastMarkerCoords = () => {
