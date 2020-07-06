@@ -47,7 +47,7 @@ const SpeakFlow = ({ entry, updateEntry }) => {
 
   return (
     <>
-      <Card style={{ marginTop: '2vh' }}>
+      <Card style={{ marginLeft: '1%' }}>
         <h4>Leave Something</h4>
         <Spacer y={1} />
         <Editor entry={entry} updateEntry={updateEntry} />

@@ -71,33 +71,44 @@ function App() {
         <Page.Content>
           <Switch>
             <EntriesClientContext.Provider value={entriesClient}>
-              <Route
-                path="/(listen|speak)/"
-                render={({ location }) => (
-                  <Map
-                    pathname={location.pathname}
-                    onFeatureClicked={onEntryClicked}
-                    layerData={loadedEntries}
-                    updateEntryLocation={updateEntryLocation}
-                  />
-                )}
-              />
-
-              <Route exact path="/">
-                <Redirect to={APP_MODES.listen.pathname} />
-              </Route>
-              <Route path={APP_MODES.listen.pathname}>
-                <Reader
-                  isOpen={isReading}
-                  onClose={readerCloseHandler}
-                  namespace={namespace}
-                  entryId={selectedEntryId}
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'stretch',
+                  justifyContent: 'space-between',
+                }}
+              >
+                <Route
+                  path="/(listen|speak)/"
+                  render={({ location }) => (
+                    <Map
+                      pathname={location.pathname}
+                      onFeatureClicked={onEntryClicked}
+                      layerData={loadedEntries}
+                      updateEntryLocation={updateEntryLocation}
+                    />
+                  )}
                 />
-              </Route>
 
-              <Route path={APP_MODES.speak.pathname}>
-                <SpeakFlow entry={draftEntry} updateEntry={updateDraftEntry} />
-              </Route>
+                <Route exact path="/">
+                  <Redirect to={APP_MODES.listen.pathname} />
+                </Route>
+                <Route path={APP_MODES.listen.pathname}>
+                  <Reader
+                    isOpen={isReading}
+                    onClose={readerCloseHandler}
+                    namespace={namespace}
+                    entryId={selectedEntryId}
+                  />
+                </Route>
+
+                <Route path={APP_MODES.speak.pathname}>
+                  <SpeakFlow
+                    entry={draftEntry}
+                    updateEntry={updateDraftEntry}
+                  />
+                </Route>
+              </div>
 
               <Route path={APP_MODES.about.pathname}>
                 <About />

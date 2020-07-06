@@ -25,6 +25,11 @@ const Map = ({
   const [currentMarkerCoords, updateCurrentMarker] = React.useState(
     getLastMarkerCoords()
   );
+  const [viewport, setViewport] = React.useState({
+    latitude: config.mapbox.initialCenter[1],
+    longitude: config.mapbox.initialCenter[0],
+    zoom: config.mapbox.initialZoom,
+  });
 
   // if in `create` mode, clicking map should leave marker
   // report coordinates to parent
@@ -49,12 +54,15 @@ const Map = ({
   return (
     <Mapbox
       style={config.mapbox.style.dark}
-      center={config.mapbox.initialCenter}
-      zoom={config.mapbox.initialZoom}
+      latitude={viewport.latitude}
+      longitude={viewport.longitude}
+      zoom={viewport.zoom}
+      onViewportChange={setViewport}
       containerStyle={{
         height: '70vh',
         width: '100%',
-        borderRadius: '10px',
+        borderRadius: '2%',
+        marginRight: '1%',
       }}
       onClick={onMapClicked}
     >
