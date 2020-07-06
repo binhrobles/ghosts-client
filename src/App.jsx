@@ -73,13 +73,13 @@ function App() {
             <EntriesClientContext.Provider value={entriesClient}>
               <Grid.Container gap={2}>
                 {/* on xs screens, map takes full width in all modes */}
-                {/* on md screens, map takes half width in speak mode */}
+                {/* on sm screens, map takes half width in speak mode */}
                 <Route
                   path="/(listen|speak)/"
                   render={({ location }) => (
                     <Grid
                       xs={24}
-                      md={
+                      sm={
                         location.pathname === APP_MODES.speak.pathname ? 12 : 24
                       }
                     >
@@ -107,8 +107,8 @@ function App() {
                   </Grid>
                 </Route>
 
-                {/* editor slides under map on xs screens, half width on md and larger */}
-                <Grid xs={24} md={12}>
+                {/* editor slides under map on xs screens, half width on sm and larger */}
+                <Grid xs={24} sm={12}>
                   <Route path={APP_MODES.speak.pathname}>
                     <SpeakFlow
                       entry={draftEntry}

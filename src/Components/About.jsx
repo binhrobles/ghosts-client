@@ -36,12 +36,8 @@ const About = () => {
         our time waiting for the bus, trading songs on guitar, paused together,
         before the next leg of our trips.
       </Text>
-      <Text p>And I was just wondering how everyone was.</Text>
       <Spacer y={1} />
-      <Text p>
-        Feel free to leave something of your own, and maybe we can hold these
-        moments together.
-      </Text>
+      <Text p>And I was just wondering how everyone was.</Text>
     </>
   );
 };
