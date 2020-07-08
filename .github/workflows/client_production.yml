@@ -1,0 +1,165 @@
+name: Production Client
+
+on:
+  push:
+    branches: [ master ] # -> production
+  pull_request:
+
+env:
+  APPLICATION_DOMAIN_NAME: 'ghosts.binhrobles.com'
+  REGION: 'us-west-2'
+  TF_WORKING_DIR: 'infrastructure/production/'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Use Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: '14.x'
+
+    - name: Get yarn cache directory path
+      id: yarn-cache-dir-path
+      run: echo "::set-output name=dir::$(yarn cache dir)"
+
+    - uses: actions/cache@v1
+      id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
+      with:
+        path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+        key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-yarn-
+
+    - name: Install dependencies
+      run: yarn --frozen-lockfile
+
+    - run: yarn test
+      env:
+        CI: true
+  
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Use Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: '14.x'
+
+    - name: Get yarn cache directory path
+      id: yarn-cache-dir-path
+      run: echo "::set-output name=dir::$(yarn cache dir)"
+
+    - uses: actions/cache@v1
+      id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
+      with:
+        path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+        key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-yarn-
+
+    - name: Install prod dependencies
+      run: yarn --production --frozen-lockfile
+
+    - name: Create production build
+      run: yarn build
+
+    - name: Archive build artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: build
+        path: build/
+
+  infra:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.TF_WORKING_DIR }}
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v1
+      with:
+        cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+
+    - name: Terraform Init
+      run: terraform init
+
+    - name: Terraform Format
+      run: terraform fmt -check
+
+    - name: Set region
+      run: sed -i 's/REPLACE_REGION/${{ env.REGION }}/g' terraform.tfvars
+
+    - name: Set domain name
+      run: sed -i 's/REPLACE_APPLICATION_DOMAIN_NAME/${{ env.APPLICATION_DOMAIN_NAME }}/g' terraform.tfvars
+
+    - name: Terraform Plan
+      run: terraform plan -var-file="terraform.tfvars"
+      if: github.ref != 'refs/heads/master' || github.event_name != 'push'
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_REGION: ${{ env.REGION }}
+        AWS_STS_REGIONAL_ENDPOINTS: regional
+
+    - name: Terraform Apply
+      if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+      run: terraform apply -var-file="terraform.tfvars" -auto-approve
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_REGION: ${{ env.REGION }}
+        AWS_STS_REGIONAL_ENDPOINTS: regional
+
+  deploy:
+    if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+    needs: 
+      - build
+      - infra
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: build
+          path: build
+
+      - name: Upload to S3
+        run: aws s3 sync build s3://$AWS_S3_BUCKET --delete --follow-symlinks --cache-control max-age=31536000,public
+        env:
+          AWS_S3_BUCKET: ${{ env.APPLICATION_DOMAIN_NAME }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ env.REGION }}
+
+
+      - name: Eliminate caching on service worker
+        run: >
+          aws s3 cp s3://$AWS_S3_BUCKET/service-worker.js s3://$AWS_S3_BUCKET/service-worker.js
+          --metadata-directive REPLACE --cache-control max-age=0,no-cache,no-store,must-revalidate
+          --content-type application/javascript --acl public-read
+        env:
+          AWS_S3_BUCKET: ${{ env.APPLICATION_DOMAIN_NAME }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ env.REGION }}
+
+      - name: Eliminate caching on index.html
+        run: >
+          aws s3 cp s3://$AWS_S3_BUCKET/index.html s3://$AWS_S3_BUCKET/index.html
+          --metadata-directive REPLACE --cache-control max-age=0,no-cache,no-store,must-revalidate
+          --content-type text/html --acl public-read
+        env:
+          AWS_S3_BUCKET: ${{ env.APPLICATION_DOMAIN_NAME }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ env.REGION }}
