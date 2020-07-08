@@ -66,6 +66,14 @@ jobs:
     - name: Install prod dependencies
       run: yarn --production --frozen-lockfile
 
+      # would really like this to be dynamically requested at client request time
+      # instead of injected at build time
+    - name: Inject secrets into .env.example
+      run: sed -i 's/REPLACE_MAPBOX_TOKEN/${{ secrets.MAPBOX_TOKEN }}/g' .env.example
+
+    - name: Move .env.example to .env.production
+      run: mv .env.example .env.production
+
     - name: Create production build
       run: yarn build
 
@@ -140,7 +148,6 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: ${{ env.REGION }}
-
 
       - name: Eliminate caching on service worker
         run: >
