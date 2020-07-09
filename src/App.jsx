@@ -64,6 +64,24 @@ function App() {
     updateDraftEntry((prev) => ({ ...prev, location: { lng, lat } }));
   };
 
+  // on xs screens, map takes full width in speak mode, hides on click in read mode
+  // on sm screens, map takes half width in read/speak mode
+  const ResponsiveMapWrapper = ({ location, match }) => {
+    const isReading = match.params && match.params.entryId;
+    const isSpeaking = location.pathname === APP_MODES.speak.pathname;
+
+    return (
+      <Grid xs={24} sm={isReading || isSpeaking ? 12 : 24}>
+        <Map
+          pathname={location.pathname}
+          onEntryClicked={onEntryClicked}
+          layerData={loadedEntries}
+          updateEntryLocation={updateEntryLocation}
+        />
+      </Grid>
+    );
+  };
+
   return (
     <Router basename="/">
       <Page size="large">
@@ -72,10 +90,20 @@ function App() {
           <Switch>
             <EntriesClientContext.Provider value={entriesClient}>
               <Grid.Container gap={2}>
-                {/* on xs screens, map takes full width in all modes */}
-                {/* on sm screens, map takes half width in speak mode */}
+                {/* site root is pushed to listen route */}
+                <Route exact path="/">
+                  <Redirect to={APP_MODES.listen.pathname} />
+                </Route>
+                {/* save on map rendering by always rendering it, and adjusting render responsively */}
                 <Route
-                  path="/(listen|speak)/"
+                  path="/(listen|speak)/:entryId?"
+                  render={ResponsiveMapWrapper}
+                />
+
+                {/* on xs screens, reader takes full width */}
+                {/* on sm screens, reader takes right half width */}
+                <Route
+                  path={`${APP_MODES.listen.pathname}/:entryId`}
                   render={({ location }) => (
                     <Grid
                       xs={24}
@@ -83,30 +111,10 @@ function App() {
                         location.pathname === APP_MODES.speak.pathname ? 12 : 24
                       }
                     >
-                      <Map
-                        pathname={location.pathname}
-                        onEntryClicked={onEntryClicked}
-                        layerData={loadedEntries}
-                        updateEntryLocation={updateEntryLocation}
-                      />
+                      <Reader namespace={namespace} />
                     </Grid>
                   )}
                 />
-
-                <Route exact path="/">
-                  <Redirect to={APP_MODES.listen.pathname} />
-                </Route>
-                <Route path={APP_MODES.listen.pathname}>
-                  <Grid xs={24}>
-                    <Reader
-                      isOpen={isReading}
-                      onClose={readerCloseHandler}
-                      namespace={namespace}
-                      entryId={selectedEntryId}
-                    />
-                  </Grid>
-                </Route>
-
                 {/* editor slides under map on xs screens, half width on sm and larger */}
                 <Grid xs={24} sm={12}>
                   <Route path={APP_MODES.speak.pathname}>

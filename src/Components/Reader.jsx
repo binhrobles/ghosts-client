@@ -1,15 +1,20 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { useParams, useHistory } from 'react-router-dom';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.bubble.css';
 import './reader.css';
 import { Modal, Loading } from '@zeit-ui/react';
 import { GetEntryById, EntriesClientContext } from '../Http/entries';
+import { APP_MODES } from '../common/constants';
 
-const Reader = ({ isOpen, onClose, namespace, entryId }) => {
+const Reader = ({ namespace }) => {
+  const { entryId } = useParams();
   const [entry, setEntry] = React.useState(null);
+  const [isOpen, setOpen] = React.useState(false);
   const [isLoading, setLoading] = React.useState(true);
   const entriesClient = React.useContext(EntriesClientContext);
+  const history = useHistory();
 
   // Downloads new entry on prop change
   React.useEffect(() => {
@@ -17,6 +22,7 @@ const Reader = ({ isOpen, onClose, namespace, entryId }) => {
 
     let isMounted = true;
     setLoading(true);
+    setOpen(true);
 
     (async () => {
       const downloaded = await GetEntryById({
@@ -35,6 +41,11 @@ const Reader = ({ isOpen, onClose, namespace, entryId }) => {
       isMounted = false;
     };
   }, [entryId, namespace, entriesClient]);
+
+  // remove entryId route when closing readview
+  const onClose = () => {
+    history.push(APP_MODES.listen.pathname);
+  };
 
   const loadingRender = (
     <>
@@ -83,14 +94,7 @@ const Reader = ({ isOpen, onClose, namespace, entryId }) => {
 };
 
 Reader.propTypes = {
-  isOpen: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired,
   namespace: PropTypes.string.isRequired,
-  entryId: PropTypes.string,
-};
-
-Reader.defaultProps = {
-  entryId: null,
 };
 
 export default Reader;

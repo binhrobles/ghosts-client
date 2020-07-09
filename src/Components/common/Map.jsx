@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { useHistory } from 'react-router-dom';
 import ReactMapboxGl, { Layer, Feature } from 'react-mapbox-gl';
 import Geocoder from './Geocoder';
 import { APP_MODES } from '../../common/constants';
@@ -33,6 +34,8 @@ const Map = ({ pathname, layerData, updateEntryLocation, onEntryClicked }) => {
     longitude: config.mapbox.initialCenter[0],
     zoom: config.mapbox.initialZoom,
   });
+  const history = useHistory();
+  // TODO: use react-router-dom.useParams to zoom to entryId if specified
 
   // after mapbox finishes rendering, grab the map object reference
   const [globalMap, setGlobalMap] = React.useState(null);
@@ -62,6 +65,9 @@ const Map = ({ pathname, layerData, updateEntryLocation, onEntryClicked }) => {
       center: JSON.parse(event.feature.properties.location),
       zoom: 17,
     });
+    history.push(
+      `${APP_MODES.listen.pathname}/${event.feature.properties.entryId}`
+    );
     onEntryClicked(event);
   };
 
