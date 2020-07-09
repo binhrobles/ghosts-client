@@ -31,6 +31,15 @@ const Map = ({
     longitude: config.mapbox.initialCenter[0],
     zoom: config.mapbox.initialZoom,
   });
+  const [map, setMap] = React.useState(null);
+
+  React.useEffect(() => {
+    if (map) map.resize();
+  }, [map, pathname]);
+
+  const onStyleLoad = (_map) => {
+    setMap(_map);
+  };
 
   // if in `create` mode, clicking map should leave marker
   // report coordinates to parent
@@ -44,17 +53,17 @@ const Map = ({
 
   // when zoomed out, should use simple map
   // when zoomed in, should use satellite imagery
-  const onZoomEnd = (map) => {
+  const onZoomEnd = (_map) => {
     if (
-      map.getZoom() > config.mapbox.transitionZoom &&
-      map.style !== config.mapbox.style.satellite
+      _map.getZoom() > config.mapbox.transitionZoom &&
+      _map.style !== config.mapbox.style.satellite
     ) {
-      map.setStyle(config.mapbox.style.satellite);
+      _map.setStyle(config.mapbox.style.satellite);
     } else if (
-      map.getZoom() <= config.mapbox.transitionZoom &&
-      map.style !== config.mapbox.style.dark
+      _map.getZoom() <= config.mapbox.transitionZoom &&
+      _map.style !== config.mapbox.style.dark
     ) {
-      map.setStyle(config.mapbox.style.dark);
+      _map.setStyle(config.mapbox.style.dark);
     }
   };
 
@@ -74,6 +83,7 @@ const Map = ({
       latitude={viewport.latitude}
       longitude={viewport.longitude}
       zoom={viewport.zoom}
+      onStyleLoad={onStyleLoad}
       onViewportChange={setViewport}
       onZoomEnd={onZoomEnd}
       onClick={onMapClicked}
