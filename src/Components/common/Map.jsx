@@ -31,15 +31,18 @@ const Map = ({
     longitude: config.mapbox.initialCenter[0],
     zoom: config.mapbox.initialZoom,
   });
+
+  // after mapbox finishes rendering, grab the map object reference
   const [map, setMap] = React.useState(null);
-
-  React.useEffect(() => {
-    if (map) map.resize();
-  }, [map, pathname]);
-
   const onStyleLoad = (_map) => {
     setMap(_map);
   };
+
+  // on pathname change, triggers resize
+  // prevents map from being stuck only rendered on half the screen
+  React.useEffect(() => {
+    if (map) map.resize();
+  }, [map, pathname]);
 
   // if in `create` mode, clicking map should leave marker
   // report coordinates to parent
