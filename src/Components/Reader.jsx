@@ -4,7 +4,7 @@ import { useParams, useHistory } from 'react-router-dom';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.bubble.css';
 import './reader.css';
-import { Modal, Loading } from '@zeit-ui/react';
+import { Card, Divider, Loading } from '@zeit-ui/react';
 import { GetEntryById, EntriesClientContext } from '../Http/entries';
 import { APP_MODES } from '../common/constants';
 
@@ -49,18 +49,20 @@ const Reader = ({ namespace }) => {
 
   const loadingRender = (
     <>
-      <Modal.Title>Loading</Modal.Title>
-      <Modal.Content>
+      <Card.Content>Loading</Card.Content>
+      <Divider y={0} />
+      <Card.Content>
         <Loading type="secondary" size="large" />
-      </Modal.Content>
+      </Card.Content>
     </>
   );
 
   const entryRender =
     entry && entry.text ? (
       <>
-        <Modal.Title>{entry.description}</Modal.Title>
-        <Modal.Content
+        <Card.Content>{entry.description}</Card.Content>
+        <Divider y={0} />
+        <Card.Content
           style={{
             maxHeight: '50vh',
             overflow: 'scroll',
@@ -73,23 +75,24 @@ const Reader = ({ namespace }) => {
             value={entry.text}
             readOnly
           />
-        </Modal.Content>
+        </Card.Content>
       </>
     ) : (
       <>
-        <Modal.Title>Yikes</Modal.Title>
-        <Modal.Content>
+        <Card.Content>Yikes</Card.Content>
+        <Divider y={0} />
+        <Card.Content>
           <p>We had some problems finding that...</p>
           <p>Entry ID: {entryId}</p>
-        </Modal.Content>
+        </Card.Content>
       </>
     );
 
   return (
-    <Modal open={isOpen} onClose={onClose}>
+    <Card width="100%">
       {isLoading && loadingRender}
       {isLoading || entryRender}
-    </Modal>
+    </Card>
   );
 };
 

@@ -102,19 +102,11 @@ function App() {
 
                 {/* on xs screens, reader takes full width */}
                 {/* on sm screens, reader takes right half width */}
-                <Route
-                  path={`${APP_MODES.listen.pathname}/:entryId`}
-                  render={({ location }) => (
-                    <Grid
-                      xs={24}
-                      sm={
-                        location.pathname === APP_MODES.speak.pathname ? 12 : 24
-                      }
-                    >
-                      <Reader namespace={namespace} />
-                    </Grid>
-                  )}
-                />
+                <Route path={`${APP_MODES.listen.pathname}/:entryId`}>
+                  <Grid xs={24} sm={12}>
+                    <Reader namespace={namespace} />
+                  </Grid>
+                </Route>
                 {/* editor slides under map on xs screens, half width on sm and larger */}
                 <Grid xs={24} sm={12}>
                   <Route path={APP_MODES.speak.pathname}>
