@@ -1,4 +1,4 @@
 {
-  "namespace/public/entry": "entry",
-  "namespace/public/entries": "entries"
+  "/namespace/public/entry/:id": "/entry/:id",
+  "/namespace/public/entries": "/entries"
 }
