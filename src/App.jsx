@@ -85,69 +85,71 @@ function App() {
   };
 
   return (
-    <Page size="large">
-      <NavBar />
-      <Page.Content>
-        <Switch>
-          <EntriesClientContext.Provider value={entriesClient}>
-            <Grid.Container gap={2}>
-              {/* site root is pushed to listen route */}
-              <Route exact path="/">
-                <Redirect to={APP_MODES.listen.pathname} />
-              </Route>
-
-              {/* save on map rendering by always rendering it, and adjusting render responsively */}
-              {/* on xs screens, map takes full width in speak mode, hides on click in read mode */}
-              {/* on sm screens, map takes half width in read/speak mode */}
-              <Route
-                path="/(listen|speak)/:entryId?"
-                render={({ location, match }) => {
-                  const isReading = match.params && match.params.entryId;
-                  const isSpeaking =
-                    location.pathname === APP_MODES.speak.pathname;
-                  const selectedEntryCenter = selectedEntry
-                    ? selectedEntry.location
-                    : null;
-                  return (
-                    <Grid
-                      xs={isReading ? 0 : 24}
-                      sm={isReading || isSpeaking ? 12 : 24}
-                    >
-                      <Map
-                        pathname={location.pathname}
-                        layerData={loadedEntries}
-                        updateEntryLocation={updateEntryLocation}
-                        selectedEntryCenter={selectedEntryCenter}
-                      />
-                    </Grid>
-                  );
-                }}
-              />
-
-              {/* on xs screens, reader takes full width */}
-              {/* on sm screens, reader takes right half width */}
-              <Route path={`${APP_MODES.listen.pathname}/:entryId`}>
-                <Grid xs={24} sm={12}>
-                  <Reader entry={selectedEntry} isLoading={isLoadingEntry} />
-                </Grid>
-              </Route>
-
-              {/* editor slides under map on xs screens, half width on sm and larger */}
-              <Grid xs={24} sm={12}>
-                <Route path={APP_MODES.speak.pathname}>
-                  <Writer entry={draftEntry} updateEntry={updateDraftEntry} />
+    <>
+      <Page size="large">
+        <NavBar />
+        <Page.Content>
+          <Switch>
+            <EntriesClientContext.Provider value={entriesClient}>
+              <Grid.Container gap={2}>
+                {/* site root is pushed to listen route */}
+                <Route exact path="/">
+                  <Redirect to={APP_MODES.listen.pathname} />
                 </Route>
-              </Grid>
-            </Grid.Container>
 
-            <Route path={APP_MODES.about.pathname}>
-              <About />
-            </Route>
-          </EntriesClientContext.Provider>
-        </Switch>
-      </Page.Content>
+                {/* save on map rendering by always rendering it, and adjusting render responsively */}
+                {/* on xs screens, map takes full width in speak mode, hides on click in read mode */}
+                {/* on sm screens, map takes half width in read/speak mode */}
+                <Route
+                  path="/(listen|speak)/:entryId?"
+                  render={({ location, match }) => {
+                    const isReading = match.params && match.params.entryId;
+                    const isSpeaking =
+                      location.pathname === APP_MODES.speak.pathname;
+                    const selectedEntryCenter = selectedEntry
+                      ? selectedEntry.location
+                      : null;
+                    return (
+                      <Grid
+                        xs={isReading ? 0 : 24}
+                        sm={isReading || isSpeaking ? 12 : 24}
+                      >
+                        <Map
+                          pathname={location.pathname}
+                          layerData={loadedEntries}
+                          updateEntryLocation={updateEntryLocation}
+                          selectedEntryCenter={selectedEntryCenter}
+                        />
+                      </Grid>
+                    );
+                  }}
+                />
+
+                {/* on xs screens, reader takes full width */}
+                {/* on sm screens, reader takes right half width */}
+                <Route path={`${APP_MODES.listen.pathname}/:entryId`}>
+                  <Grid xs={24} sm={12}>
+                    <Reader entry={selectedEntry} isLoading={isLoadingEntry} />
+                  </Grid>
+                </Route>
+
+                {/* editor slides under map on xs screens, half width on sm and larger */}
+                <Grid xs={24} sm={12}>
+                  <Route path={APP_MODES.speak.pathname}>
+                    <Writer entry={draftEntry} updateEntry={updateDraftEntry} />
+                  </Route>
+                </Grid>
+              </Grid.Container>
+
+              <Route path={APP_MODES.about.pathname}>
+                <About />
+              </Route>
+            </EntriesClientContext.Provider>
+          </Switch>
+        </Page.Content>
+      </Page>
       <Footer />
-    </Page>
+    </>
   );
 }
 
