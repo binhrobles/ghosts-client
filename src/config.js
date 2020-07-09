@@ -10,7 +10,7 @@ const config = Object.freeze({
       satellite: 'mapbox://styles/binhrobles/ckc9tdec23p3s1hn1c71nxh53',
     },
     publicAccessToken: process.env.REACT_APP_MAPBOX_PUBLIC_ACCESS_TOKEN,
-    initialCenter: [170, 22],
+    initialCenter: [-100.6, 23.22],
     minZoom: 0.9,
     transitionZoom: 14,
     initialZoom: [0.85],

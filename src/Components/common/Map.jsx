@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { useHistory, useParams } from 'react-router-dom';
 import ReactMapboxGl, { Layer, Feature } from 'react-mapbox-gl';
 import Geocoder from './Geocoder';
 import { APP_MODES } from '../../common/constants';
@@ -17,6 +18,7 @@ const MarkerStyle = {
   'circle-radius': 10,
 };
 
+// if there's a draft entry in localstorage, retrieve it and put it on the map
 const getLastMarkerCoords = () => {
   const storedEntry = sessionStorage.getItem('entry');
   if (!storedEntry) return null;
@@ -24,15 +26,17 @@ const getLastMarkerCoords = () => {
   return [entry.location.lng, entry.location.lat];
 };
 
-const Map = ({ pathname, layerData, updateEntryLocation, onEntryClicked }) => {
+const Map = ({
+  pathname,
+  layerData,
+  selectedEntryCenter,
+  updateEntryLocation,
+}) => {
   const [currentMarkerCoords, updateCurrentMarker] = React.useState(
     getLastMarkerCoords()
   );
-  const [viewport, setViewport] = React.useState({
-    latitude: config.mapbox.initialCenter[1],
-    longitude: config.mapbox.initialCenter[0],
-    zoom: config.mapbox.initialZoom,
-  });
+  const history = useHistory();
+  const { entryId } = useParams();
 
   // after mapbox finishes rendering, grab the map object reference
   const [globalMap, setGlobalMap] = React.useState(null);
@@ -43,8 +47,16 @@ const Map = ({ pathname, layerData, updateEntryLocation, onEntryClicked }) => {
   // on pathname change, triggers resize
   // prevents map from being stuck only rendered on half the screen
   React.useEffect(() => {
-    if (globalMap) globalMap.resize();
-  }, [globalMap, pathname]);
+    if (globalMap) {
+      globalMap.resize();
+      if (entryId && selectedEntryCenter) {
+        globalMap.flyTo({
+          center: selectedEntryCenter,
+          zoom: 17,
+        });
+      }
+    }
+  }, [globalMap, pathname, entryId, selectedEntryCenter]);
 
   // if in `create` mode, clicking map should leave marker
   // report coordinates to parent
@@ -58,16 +70,16 @@ const Map = ({ pathname, layerData, updateEntryLocation, onEntryClicked }) => {
 
   // fly/zoom to entry before calling parent function
   const handleFeatureClicked = (event) => {
-    event.map.flyTo({
-      center: JSON.parse(event.feature.properties.location),
-      zoom: 17,
-    });
-    onEntryClicked(event);
+    if (pathname.includes(APP_MODES.listen.pathname)) {
+      history.push(
+        `${APP_MODES.listen.pathname}/${event.feature.properties.entryId}`
+      );
+    }
   };
 
   // when zoomed out, should use simple map
   // when zoomed in, should use satellite imagery
-  const onZoomEnd = (_map) => {
+  const onZoom = (_map) => {
     if (
       _map.getZoom() > config.mapbox.transitionZoom &&
       _map.style !== config.mapbox.style.satellite
@@ -81,7 +93,7 @@ const Map = ({ pathname, layerData, updateEntryLocation, onEntryClicked }) => {
     }
   };
 
-  // properties will be passed to the onEntryClicked func
+  // properties will be passed to the handleFeatureClicked func
   const features = layerData.map((point) => (
     <Feature
       key={point._id}
@@ -94,12 +106,10 @@ const Map = ({ pathname, layerData, updateEntryLocation, onEntryClicked }) => {
   return (
     <Mapbox
       style={config.mapbox.style.dark}
-      latitude={viewport.latitude}
-      longitude={viewport.longitude}
-      zoom={viewport.zoom}
+      center={config.mapbox.initialCenter}
+      zoom={config.mapbox.initialZoom}
       onStyleLoad={onStyleLoad}
-      onViewportChange={setViewport}
-      onZoomEnd={onZoomEnd}
+      onZoom={onZoom}
       onClick={onMapClicked}
       containerStyle={{
         height: '70vh',
@@ -133,7 +143,11 @@ Map.propTypes = {
     })
   ).isRequired,
   updateEntryLocation: PropTypes.func.isRequired,
-  onEntryClicked: PropTypes.func.isRequired,
+  selectedEntryCenter: PropTypes.arrayOf(PropTypes.number),
+};
+
+Map.defaultProps = {
+  selectedEntryCenter: null,
 };
 
 export default Map;

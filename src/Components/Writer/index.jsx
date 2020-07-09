@@ -8,16 +8,9 @@ import Entry from '../../common/Entry';
 import { APP_MODES } from '../../common/constants';
 import config from '../../config';
 
-const ButtonComponent = ({ onClick, label }) => {
-  return (
-    <Button auto type="secondary" onClick={onClick}>
-      {label}
-    </Button>
-  );
-};
-
-const SpeakFlow = ({ entry, updateEntry }) => {
+const Writer = ({ entry, updateEntry }) => {
   const [, setToast] = useToasts();
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
   const entriesClient = React.useContext(EntriesClientContext);
   const history = useHistory();
 
@@ -39,6 +32,7 @@ const SpeakFlow = ({ entry, updateEntry }) => {
     // loading indication screens
 
     // send to backend
+    setIsSubmitting(true);
     if (
       await CreateEntry({ client: entriesClient, namespace: 'public', entry })
     ) {
@@ -55,6 +49,7 @@ const SpeakFlow = ({ entry, updateEntry }) => {
         text: 'There was an issue trying to save this ☹️',
       });
     }
+    setIsSubmitting(false);
   };
 
   return (
@@ -79,7 +74,14 @@ const SpeakFlow = ({ entry, updateEntry }) => {
         />
         <Card.Footer>
           <Row style={{ width: '100%' }} justify="end">
-            <ButtonComponent label="Submit" onClick={onSubmit} />
+            <Button
+              auto
+              type="secondary"
+              loading={isSubmitting}
+              onClick={onSubmit}
+            >
+              Submit
+            </Button>
           </Row>
         </Card.Footer>
       </Card>
@@ -87,14 +89,12 @@ const SpeakFlow = ({ entry, updateEntry }) => {
   );
 };
 
-SpeakFlow.propTypes = {
-  entry: PropTypes.instanceOf(Entry).isRequired,
+Writer.propTypes = {
+  entry: PropTypes.shape({
+    description: PropTypes.string,
+    submitter: PropTypes.string,
+  }).isRequired,
   updateEntry: PropTypes.func.isRequired,
 };
 
-ButtonComponent.propTypes = {
-  label: PropTypes.string.isRequired,
-  onClick: PropTypes.func.isRequired,
-};
-
-export default SpeakFlow;
+export default Writer;
