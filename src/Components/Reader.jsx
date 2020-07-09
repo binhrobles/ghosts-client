@@ -89,7 +89,7 @@ const Reader = ({ namespace }) => {
     );
 
   return (
-    <Card width="100%">
+    <Card>
       {isLoading && loadingRender}
       {isLoading || entryRender}
     </Card>
