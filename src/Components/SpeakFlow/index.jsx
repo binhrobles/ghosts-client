@@ -8,14 +8,6 @@ import Entry from '../../common/Entry';
 import { APP_MODES } from '../../common/constants';
 import config from '../../config';
 
-const ButtonComponent = ({ onClick, label }) => {
-  return (
-    <Button auto type="secondary" onClick={onClick}>
-      {label}
-    </Button>
-  );
-};
-
 const SpeakFlow = ({ entry, updateEntry }) => {
   const [, setToast] = useToasts();
   const entriesClient = React.useContext(EntriesClientContext);
@@ -79,7 +71,9 @@ const SpeakFlow = ({ entry, updateEntry }) => {
         />
         <Card.Footer>
           <Row style={{ width: '100%' }} justify="end">
-            <ButtonComponent label="Submit" onClick={onSubmit} />
+            <Button auto type="secondary" onClick={onSubmit}>
+              Submit
+            </Button>
           </Row>
         </Card.Footer>
       </Card>
@@ -90,11 +84,6 @@ const SpeakFlow = ({ entry, updateEntry }) => {
 SpeakFlow.propTypes = {
   entry: PropTypes.instanceOf(Entry).isRequired,
   updateEntry: PropTypes.func.isRequired,
-};
-
-ButtonComponent.propTypes = {
-  label: PropTypes.string.isRequired,
-  onClick: PropTypes.func.isRequired,
 };
 
 export default SpeakFlow;

@@ -4,7 +4,7 @@ import { useParams, useHistory } from 'react-router-dom';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.bubble.css';
 import './reader.css';
-import { Card, Divider, Loading } from '@zeit-ui/react';
+import { Button, Card, Divider, Row, Loading } from '@zeit-ui/react';
 import { GetEntryById, EntriesClientContext } from '../Http/entries';
 import { APP_MODES } from '../common/constants';
 
@@ -62,11 +62,12 @@ const Reader = ({ namespace }) => {
       <>
         <Card.Content>{entry.description}</Card.Content>
         <Divider y={0} />
-        <Card.Content
+        <div
           style={{
+            paddingTop: '5%',
             maxHeight: '50vh',
-            overflow: 'scroll',
-            borderRadius: '10px',
+            overflow: 'auto',
+            WebkitOverflowScrolling: 'touch',
           }}
         >
           <ReactQuill
@@ -75,7 +76,7 @@ const Reader = ({ namespace }) => {
             value={entry.text}
             readOnly
           />
-        </Card.Content>
+        </div>
       </>
     ) : (
       <>
@@ -92,6 +93,11 @@ const Reader = ({ namespace }) => {
     <Card>
       {isLoading && loadingRender}
       {isLoading || entryRender}
+      <Card.Footer>
+        <Row style={{ width: '100%' }} justify="center">
+          <Button onClick={onClose}>Close</Button>
+        </Row>
+      </Card.Footer>
     </Card>
   );
 };
