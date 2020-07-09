@@ -60,7 +60,7 @@ function App() {
     const isSpeaking = location.pathname === APP_MODES.speak.pathname;
 
     return (
-      <Grid xs={24} sm={isReading || isSpeaking ? 12 : 24}>
+      <Grid xs={isReading ? 0 : 24} sm={isReading || isSpeaking ? 12 : 24}>
         <Map
           pathname={location.pathname}
           layerData={loadedEntries}
