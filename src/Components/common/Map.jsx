@@ -10,6 +10,13 @@ const Mapbox = ReactMapboxGl({
   minZoom: config.mapbox.minZoom,
 });
 
+const MarkerStyle = {
+  'circle-color': '#FFFFFF',
+  'circle-blur': 0.7,
+  'circle-opacity': 0.95,
+  'circle-radius': 10,
+};
+
 const getLastMarkerCoords = () => {
   const storedEntry = sessionStorage.getItem('entry');
   if (!storedEntry) return null;
@@ -104,13 +111,13 @@ const Map = ({ pathname, layerData, updateEntryLocation, onEntryClicked }) => {
       <Geocoder />
 
       {/* existing entries */}
-      <Layer type="circle" paint={{ 'circle-color': '#F81CE5' }}>
+      <Layer type="circle" paint={MarkerStyle}>
         {features}
       </Layer>
 
       {/* marker set for leaving a entry */}
       {currentMarkerCoords && (
-        <Layer type="circle" paint={{ 'circle-color': '#ffffff' }}>
+        <Layer type="circle" paint={MarkerStyle}>
           <Feature coordinates={currentMarkerCoords} />
         </Layer>
       )}
