@@ -5,40 +5,11 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.bubble.css';
 import './reader.css';
 import { Button, Card, Divider, Row, Loading } from '@zeit-ui/react';
-import { GetEntryById, EntriesClientContext } from '../Http/entries';
 import { APP_MODES } from '../common/constants';
 
-const Reader = ({ namespace }) => {
+const Reader = ({ entry, isLoading }) => {
   const { entryId } = useParams();
-  const [entry, setEntry] = React.useState(null);
-  const [isLoading, setLoading] = React.useState(true);
-  const entriesClient = React.useContext(EntriesClientContext);
   const history = useHistory();
-
-  // Downloads new entry on prop change
-  React.useEffect(() => {
-    if (!entryId) return () => {};
-
-    let isMounted = true;
-    setLoading(true);
-
-    (async () => {
-      const downloaded = await GetEntryById({
-        client: entriesClient,
-        namespace,
-        id: entryId,
-      });
-
-      if (isMounted) {
-        setLoading(false);
-        setEntry(downloaded);
-      }
-    })();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [entryId, namespace, entriesClient]);
 
   // remove entryId route when closing readview
   const onClose = () => {
@@ -101,7 +72,12 @@ const Reader = ({ namespace }) => {
 };
 
 Reader.propTypes = {
-  namespace: PropTypes.string.isRequired,
+  entry: PropTypes.shape({
+    text: PropTypes.string,
+    description: PropTypes.string,
+    location: PropTypes.arrayOf(PropTypes.number),
+  }).isRequired,
+  isLoading: PropTypes.bool.isRequired,
 };
 
 export default Reader;

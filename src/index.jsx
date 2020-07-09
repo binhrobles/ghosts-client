@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import { ZeitProvider, CssBaseline } from '@zeit-ui/react';
+import { HashRouter as Router } from 'react-router-dom';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { DarkTheme } from './themes';
@@ -10,7 +11,9 @@ ReactDOM.render(
   <React.StrictMode>
     <ZeitProvider theme={DarkTheme}>
       <CssBaseline />
-      <App />
+      <Router basename="/">
+        <App />
+      </Router>
     </ZeitProvider>
   </React.StrictMode>,
   document.getElementById('root')

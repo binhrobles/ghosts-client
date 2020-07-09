@@ -25,11 +25,15 @@ const getLastMarkerCoords = () => {
   return [entry.location.lng, entry.location.lat];
 };
 
-const Map = ({ pathname, layerData, updateEntryLocation }) => {
+const Map = ({
+  pathname,
+  layerData,
+  selectedEntryCenter,
+  updateEntryLocation,
+}) => {
   const [currentMarkerCoords, updateCurrentMarker] = React.useState(
     getLastMarkerCoords()
   );
-  const [selectedCenter, updateSelectedCenter] = React.useState(null);
   const history = useHistory();
   const { entryId } = useParams();
 
@@ -44,16 +48,14 @@ const Map = ({ pathname, layerData, updateEntryLocation }) => {
   React.useEffect(() => {
     if (globalMap) {
       globalMap.resize();
-      // TODO: if someone follows a link to an entry, we won't have the coordinates
-      // need to retrieve the entry in a parent component, for the Reader + Map
-      if (entryId && selectedCenter) {
+      if (entryId && selectedEntryCenter.length === 2) {
         globalMap.flyTo({
-          center: selectedCenter,
+          center: selectedEntryCenter,
           zoom: 17,
         });
       }
     }
-  }, [globalMap, pathname, entryId, selectedCenter]);
+  }, [globalMap, pathname, entryId, selectedEntryCenter]);
 
   // if in `create` mode, clicking map should leave marker
   // report coordinates to parent
@@ -68,7 +70,6 @@ const Map = ({ pathname, layerData, updateEntryLocation }) => {
   // fly/zoom to entry before calling parent function
   const handleFeatureClicked = (event) => {
     if (pathname.includes(APP_MODES.listen.pathname)) {
-      updateSelectedCenter(JSON.parse(event.feature.properties.location));
       history.push(
         `${APP_MODES.listen.pathname}/${event.feature.properties.entryId}`
       );
@@ -141,6 +142,11 @@ Map.propTypes = {
     })
   ).isRequired,
   updateEntryLocation: PropTypes.func.isRequired,
+  selectedEntryCenter: PropTypes.arrayOf(PropTypes.number),
+};
+
+Map.defaultProps = {
+  selectedEntryCenter: [],
 };
 
 export default Map;
