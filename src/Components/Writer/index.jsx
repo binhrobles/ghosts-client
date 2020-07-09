@@ -8,7 +8,7 @@ import Entry from '../../common/Entry';
 import { APP_MODES } from '../../common/constants';
 import config from '../../config';
 
-const SpeakFlow = ({ entry, updateEntry }) => {
+const Writer = ({ entry, updateEntry }) => {
   const [, setToast] = useToasts();
   const entriesClient = React.useContext(EntriesClientContext);
   const history = useHistory();
@@ -81,9 +81,12 @@ const SpeakFlow = ({ entry, updateEntry }) => {
   );
 };
 
-SpeakFlow.propTypes = {
-  entry: PropTypes.instanceOf(Entry).isRequired,
+Writer.propTypes = {
+  entry: PropTypes.shape({
+    description: PropTypes.string,
+    submitter: PropTypes.string,
+  }).isRequired,
   updateEntry: PropTypes.func.isRequired,
 };
 
-export default SpeakFlow;
+export default Writer;

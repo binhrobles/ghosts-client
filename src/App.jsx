@@ -1,7 +1,7 @@
 import React from 'react';
 import { Grid, Page } from '@zeit-ui/react';
 import { Switch, Redirect, Route, useRouteMatch } from 'react-router-dom';
-import { About, Reader, SpeakFlow, Footer, NavBar } from './Components/index';
+import { About, Reader, Writer, Footer, NavBar } from './Components/index';
 import Map from './Components/common/Map';
 import Entry from './common/Entry';
 import {
@@ -107,7 +107,7 @@ function App() {
                     location.pathname === APP_MODES.speak.pathname;
                   const selectedEntryCenter = selectedEntry
                     ? selectedEntry.location
-                    : [];
+                    : null;
                   return (
                     <Grid
                       xs={isReading ? 0 : 24}
@@ -135,10 +135,7 @@ function App() {
               {/* editor slides under map on xs screens, half width on sm and larger */}
               <Grid xs={24} sm={12}>
                 <Route path={APP_MODES.speak.pathname}>
-                  <SpeakFlow
-                    entry={draftEntry}
-                    updateEntry={updateDraftEntry}
-                  />
+                  <Writer entry={draftEntry} updateEntry={updateDraftEntry} />
                 </Route>
               </Grid>
             </Grid.Container>

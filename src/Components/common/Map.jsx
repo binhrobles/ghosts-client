@@ -18,6 +18,7 @@ const MarkerStyle = {
   'circle-radius': 10,
 };
 
+// if there's a draft entry in localstorage, retrieve it and put it on the map
 const getLastMarkerCoords = () => {
   const storedEntry = sessionStorage.getItem('entry');
   if (!storedEntry) return null;
@@ -48,7 +49,7 @@ const Map = ({
   React.useEffect(() => {
     if (globalMap) {
       globalMap.resize();
-      if (entryId && selectedEntryCenter.length === 2) {
+      if (entryId && selectedEntryCenter) {
         globalMap.flyTo({
           center: selectedEntryCenter,
           zoom: 17,
@@ -146,7 +147,7 @@ Map.propTypes = {
 };
 
 Map.defaultProps = {
-  selectedEntryCenter: [],
+  selectedEntryCenter: null,
 };
 
 export default Map;

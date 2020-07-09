@@ -76,8 +76,12 @@ Reader.propTypes = {
     text: PropTypes.string,
     description: PropTypes.string,
     location: PropTypes.arrayOf(PropTypes.number),
-  }).isRequired,
+  }),
   isLoading: PropTypes.bool.isRequired,
+};
+
+Reader.defaultProps = {
+  entry: null,
 };
 
 export default Reader;
