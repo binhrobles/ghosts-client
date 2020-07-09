@@ -1,0 +1,49 @@
+{
+  "entry": [
+    {
+        "_index": "n-public",
+        "_type": "_doc",
+        "_id": "abcdefg",
+        "id": "abcdefg",
+        "_score": 1,
+        "_source": {
+            "submitter": {
+                "S": "anon"
+            },
+            "description": {
+                "S": "K dot"
+            },
+            "location": [
+                -119.29655777409528,
+                34.44136520185029
+            ],
+            "tags": {
+                "L": []
+            }
+        }
+    }
+  ],
+  "entries": [
+    {
+        "_index": "n-public",
+        "_type": "_doc",
+        "_id": "abcdefg",
+        "_score": 1,
+        "_source": {
+            "submitter": {
+                "S": "anon"
+            },
+            "description": {
+                "S": "K dot"
+            },
+            "location": [
+                -119.29655777409528,
+                34.44136520185029
+            ],
+            "tags": {
+                "L": []
+            }
+        }
+    }
+  ]
+}

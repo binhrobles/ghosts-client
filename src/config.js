@@ -1,7 +1,7 @@
 const config = Object.freeze({
   baseURL:
     process.env.NODE_ENV === 'development'
-      ? 'https://personal.ghosts-api.binhrobles.com'
+      ? 'http://localhost:3001'
       : 'https://ghosts-api.binhrobles.com',
   googleClientId: '',
   mapbox: {
