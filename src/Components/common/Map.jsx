@@ -50,8 +50,12 @@ const Map = ({ pathname, layerData, updateEntryLocation, onEntryClicked }) => {
   };
 
   // fly/zoom to entry before calling parent function
-  const handleFeatureClicked = (_map, event) => {
-    _map.flyTo({ center: event.features[0].geometry.coordinates });
+  const handleFeatureClicked = (event) => {
+    event.map.flyTo({
+      center: JSON.parse(event.feature.properties.location),
+      zoom: 17,
+    });
+    onEntryClicked(event);
   };
 
   // when zoomed out, should use simple map
@@ -74,7 +78,7 @@ const Map = ({ pathname, layerData, updateEntryLocation, onEntryClicked }) => {
   const features = layerData.map((point) => (
     <Feature
       key={point._id}
-      properties={{ entryId: point._id }}
+      properties={{ entryId: point._id, location: point._source.location }}
       coordinates={point._source.location}
       onClick={handleFeatureClicked}
     />

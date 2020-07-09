@@ -85,7 +85,7 @@ function App() {
                     >
                       <Map
                         pathname={location.pathname}
-                        onFeatureClicked={onEntryClicked}
+                        onEntryClicked={onEntryClicked}
                         layerData={loadedEntries}
                         updateEntryLocation={updateEntryLocation}
                       />
