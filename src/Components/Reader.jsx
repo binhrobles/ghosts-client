@@ -11,7 +11,6 @@ import { APP_MODES } from '../common/constants';
 const Reader = ({ namespace }) => {
   const { entryId } = useParams();
   const [entry, setEntry] = React.useState(null);
-  const [isOpen, setOpen] = React.useState(false);
   const [isLoading, setLoading] = React.useState(true);
   const entriesClient = React.useContext(EntriesClientContext);
   const history = useHistory();
@@ -22,7 +21,6 @@ const Reader = ({ namespace }) => {
 
     let isMounted = true;
     setLoading(true);
-    setOpen(true);
 
     (async () => {
       const downloaded = await GetEntryById({

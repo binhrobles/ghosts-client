@@ -21,10 +21,8 @@ import config from './config';
 let entriesClient = null;
 
 function App() {
-  const [isReading, setIsReading] = React.useState(false);
   const [draftEntry, updateDraftEntry] = useObjectWithLocalStorage('entry');
   const [loadedEntries, updateLoadedEntries] = React.useState([]);
-  const [selectedEntryId, updateSelectedEntryId] = React.useState(null);
   const namespace = 'public';
 
   if (!draftEntry) updateDraftEntry(new Entry());
@@ -51,15 +49,6 @@ function App() {
     };
   }, [namespace]);
 
-  const readerCloseHandler = () => {
-    setIsReading(false);
-  };
-
-  const onEntryClicked = (event) => {
-    updateSelectedEntryId(event.feature.properties.entryId);
-    setIsReading(true);
-  };
-
   const updateEntryLocation = ({ lng, lat }) => {
     updateDraftEntry((prev) => ({ ...prev, location: { lng, lat } }));
   };
@@ -74,7 +63,6 @@ function App() {
       <Grid xs={24} sm={isReading || isSpeaking ? 12 : 24}>
         <Map
           pathname={location.pathname}
-          onEntryClicked={onEntryClicked}
           layerData={loadedEntries}
           updateEntryLocation={updateEntryLocation}
         />
@@ -104,6 +92,7 @@ function App() {
                 {/* on sm screens, reader takes right half width */}
                 <Route path={`${APP_MODES.listen.pathname}/:entryId`}>
                   <Grid xs={24} sm={12}>
+                    {/* TODO: should this really be a prop, and not read from the path? */}
                     <Reader namespace={namespace} />
                   </Grid>
                 </Route>

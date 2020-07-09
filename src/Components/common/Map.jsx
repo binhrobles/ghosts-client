@@ -25,7 +25,7 @@ const getLastMarkerCoords = () => {
   return [entry.location.lng, entry.location.lat];
 };
 
-const Map = ({ pathname, layerData, updateEntryLocation, onEntryClicked }) => {
+const Map = ({ pathname, layerData, updateEntryLocation }) => {
   const [currentMarkerCoords, updateCurrentMarker] = React.useState(
     getLastMarkerCoords()
   );
@@ -68,7 +68,6 @@ const Map = ({ pathname, layerData, updateEntryLocation, onEntryClicked }) => {
     history.push(
       `${APP_MODES.listen.pathname}/${event.feature.properties.entryId}`
     );
-    onEntryClicked(event);
   };
 
   // when zoomed out, should use simple map
@@ -87,7 +86,7 @@ const Map = ({ pathname, layerData, updateEntryLocation, onEntryClicked }) => {
     }
   };
 
-  // properties will be passed to the onEntryClicked func
+  // properties will be passed to the handleFeatureClicked func
   const features = layerData.map((point) => (
     <Feature
       key={point._id}
@@ -139,7 +138,6 @@ Map.propTypes = {
     })
   ).isRequired,
   updateEntryLocation: PropTypes.func.isRequired,
-  onEntryClicked: PropTypes.func.isRequired,
 };
 
 export default Map;
