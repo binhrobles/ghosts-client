@@ -80,13 +80,14 @@ const Map = ({
   // when zoomed out, should use simple map
   // when zoomed in, should use satellite imagery
   const onZoom = (_map) => {
+    const zoom = _map.getZoom();
     if (
-      _map.getZoom() > config.mapbox.transitionZoom &&
+      zoom > config.mapbox.transitionZoom &&
       _map.style !== config.mapbox.style.satellite
     ) {
       _map.setStyle(config.mapbox.style.satellite);
     } else if (
-      _map.getZoom() <= config.mapbox.transitionZoom &&
+      zoom <= config.mapbox.transitionZoom &&
       _map.style !== config.mapbox.style.dark
     ) {
       _map.setStyle(config.mapbox.style.dark);
