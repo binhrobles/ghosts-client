@@ -13,6 +13,8 @@ const Reader = ({ isOpen, onClose, namespace, entryId }) => {
 
   // Downloads new entry on prop change
   React.useEffect(() => {
+    if (!entryId) return () => {};
+
     let isMounted = true;
     setLoading(true);
 
@@ -28,6 +30,7 @@ const Reader = ({ isOpen, onClose, namespace, entryId }) => {
         setEntry(downloaded);
       }
     })();
+
     return () => {
       isMounted = false;
     };
@@ -83,7 +86,11 @@ Reader.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   namespace: PropTypes.string.isRequired,
-  entryId: PropTypes.string.isRequired,
+  entryId: PropTypes.string,
+};
+
+Reader.defaultProps = {
+  entryId: null,
 };
 
 export default Reader;
