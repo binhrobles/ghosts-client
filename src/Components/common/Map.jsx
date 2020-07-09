@@ -32,7 +32,6 @@ const Map = ({ pathname, layerData, updateEntryLocation }) => {
   const [selectedCenter, updateSelectedCenter] = React.useState(null);
   const history = useHistory();
   const { entryId } = useParams();
-  // TODO: use react-router-dom.useParams to zoom to entryId if specified
 
   // after mapbox finishes rendering, grab the map object reference
   const [globalMap, setGlobalMap] = React.useState(null);
@@ -45,6 +44,8 @@ const Map = ({ pathname, layerData, updateEntryLocation }) => {
   React.useEffect(() => {
     if (globalMap) {
       globalMap.resize();
+      // TODO: if someone follows a link to an entry, we won't have the coordinates
+      // need to retrieve the entry in a parent component, for the Reader + Map
       if (entryId && selectedCenter) {
         globalMap.flyTo({
           center: selectedCenter,
@@ -52,7 +53,7 @@ const Map = ({ pathname, layerData, updateEntryLocation }) => {
         });
       }
     }
-  }, [globalMap, pathname, selectedCenter]);
+  }, [globalMap, pathname, entryId, selectedCenter]);
 
   // if in `create` mode, clicking map should leave marker
   // report coordinates to parent
@@ -66,10 +67,12 @@ const Map = ({ pathname, layerData, updateEntryLocation }) => {
 
   // fly/zoom to entry before calling parent function
   const handleFeatureClicked = (event) => {
-    updateSelectedCenter(JSON.parse(event.feature.properties.location));
-    history.push(
-      `${APP_MODES.listen.pathname}/${event.feature.properties.entryId}`
-    );
+    if (pathname.includes(APP_MODES.listen.pathname)) {
+      updateSelectedCenter(JSON.parse(event.feature.properties.location));
+      history.push(
+        `${APP_MODES.listen.pathname}/${event.feature.properties.entryId}`
+      );
+    }
   };
 
   // when zoomed out, should use simple map
