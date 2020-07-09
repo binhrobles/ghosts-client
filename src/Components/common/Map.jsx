@@ -17,12 +17,7 @@ const getLastMarkerCoords = () => {
   return [entry.location.lng, entry.location.lat];
 };
 
-const Map = ({
-  pathname,
-  layerData,
-  updateEntryLocation,
-  onFeatureClicked,
-}) => {
+const Map = ({ pathname, layerData, updateEntryLocation, onEntryClicked }) => {
   const [currentMarkerCoords, updateCurrentMarker] = React.useState(
     getLastMarkerCoords()
   );
@@ -33,16 +28,16 @@ const Map = ({
   });
 
   // after mapbox finishes rendering, grab the map object reference
-  const [map, setMap] = React.useState(null);
+  const [globalMap, setGlobalMap] = React.useState(null);
   const onStyleLoad = (_map) => {
-    setMap(_map);
+    setGlobalMap(_map);
   };
 
   // on pathname change, triggers resize
   // prevents map from being stuck only rendered on half the screen
   React.useEffect(() => {
-    if (map) map.resize();
-  }, [map, pathname]);
+    if (globalMap) globalMap.resize();
+  }, [globalMap, pathname]);
 
   // if in `create` mode, clicking map should leave marker
   // report coordinates to parent
@@ -52,6 +47,11 @@ const Map = ({
       updateCurrentMarker([wrappedCoords.lng, wrappedCoords.lat]);
       updateEntryLocation({ ...wrappedCoords });
     }
+  };
+
+  // fly/zoom to entry before calling parent function
+  const handleFeatureClicked = (_map, event) => {
+    _map.flyTo({ center: event.features[0].geometry.coordinates });
   };
 
   // when zoomed out, should use simple map
@@ -76,7 +76,7 @@ const Map = ({
       key={point._id}
       properties={{ entryId: point._id }}
       coordinates={point._source.location}
-      onClick={onFeatureClicked}
+      onClick={handleFeatureClicked}
     />
   ));
 
@@ -122,7 +122,7 @@ Map.propTypes = {
     })
   ).isRequired,
   updateEntryLocation: PropTypes.func.isRequired,
-  onFeatureClicked: PropTypes.func.isRequired,
+  onEntryClicked: PropTypes.func.isRequired,
 };
 
 export default Map;
