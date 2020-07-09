@@ -10,6 +10,7 @@ import config from '../../config';
 
 const Writer = ({ entry, updateEntry }) => {
   const [, setToast] = useToasts();
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
   const entriesClient = React.useContext(EntriesClientContext);
   const history = useHistory();
 
@@ -31,6 +32,7 @@ const Writer = ({ entry, updateEntry }) => {
     // loading indication screens
 
     // send to backend
+    setIsSubmitting(true);
     if (
       await CreateEntry({ client: entriesClient, namespace: 'public', entry })
     ) {
@@ -47,6 +49,7 @@ const Writer = ({ entry, updateEntry }) => {
         text: 'There was an issue trying to save this ☹️',
       });
     }
+    setIsSubmitting(false);
   };
 
   return (
@@ -71,7 +74,12 @@ const Writer = ({ entry, updateEntry }) => {
         />
         <Card.Footer>
           <Row style={{ width: '100%' }} justify="end">
-            <Button auto type="secondary" onClick={onSubmit}>
+            <Button
+              auto
+              type="secondary"
+              loading={isSubmitting}
+              onClick={onSubmit}
+            >
               Submit
             </Button>
           </Row>
