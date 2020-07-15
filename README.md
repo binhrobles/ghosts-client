@@ -15,3 +15,7 @@ Because memories live where they were made.
 # From create-react-app
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+
+# Credits
+
+- FavIcon made by <a href="https://www.flaticon.com/authors/icongeek26" title="Icongeek26">Icongeek26</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>
