@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { Button, Card, Row, Input, Spacer, useToasts } from '@zeit-ui/react';
 import Editor from './Editor';
 import { CreateEntry, EntriesClientContext } from '../../Http/entries';
@@ -13,6 +13,7 @@ const Writer = ({ entry, updateEntry }) => {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const entriesClient = React.useContext(EntriesClientContext);
   const history = useHistory();
+  const { namespace } = useParams();
 
   const onAttributeChange = (key) => {
     return (event) => {
@@ -33,9 +34,7 @@ const Writer = ({ entry, updateEntry }) => {
 
     // send to backend
     setIsSubmitting(true);
-    if (
-      await CreateEntry({ client: entriesClient, namespace: 'public', entry })
-    ) {
+    if (await CreateEntry({ client: entriesClient, namespace, entry })) {
       setToast({ text: 'Thanks for sharing.' });
 
       // reset local storage + state

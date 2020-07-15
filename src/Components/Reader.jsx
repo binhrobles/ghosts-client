@@ -8,12 +8,12 @@ import { Button, Card, Divider, Row, Loading } from '@zeit-ui/react';
 import { APP_MODES } from '../common/constants';
 
 const Reader = ({ entry, isLoading }) => {
-  const { entryId } = useParams();
+  const { namespace, entryId } = useParams();
   const history = useHistory();
 
   // remove entryId route when closing readview
   const onClose = () => {
-    history.push(APP_MODES.listen.pathname);
+    history.push(`${APP_MODES.listen.pathname}/${namespace}`);
   };
 
   const loadingRender = (

@@ -36,7 +36,7 @@ const Map = ({
     getLastMarkerCoords()
   );
   const history = useHistory();
-  const { entryId } = useParams();
+  const { namespace, entryId } = useParams();
 
   // after mapbox finishes rendering, grab the map object reference
   const [globalMap, setGlobalMap] = React.useState(null);
@@ -72,7 +72,7 @@ const Map = ({
   const handleFeatureClicked = (event) => {
     if (pathname.includes(APP_MODES.listen.pathname)) {
       history.push(
-        `${APP_MODES.listen.pathname}/${event.feature.properties.entryId}`
+        `${APP_MODES.listen.pathname}/${namespace}/${event.feature.properties.entryId}`
       );
     }
   };

@@ -18,10 +18,18 @@ let entriesClient = null;
 
 function App() {
   const [draftEntry, updateDraftEntry] = useObjectWithLocalStorage('entry');
-  const namespace = 'public';
 
   if (!draftEntry) updateDraftEntry(new Entry());
   if (!entriesClient) entriesClient = CreateClient(config.baseURL);
+
+  // updates namespace, if necessary, on route change
+  const [namespace, updateNamespace] = React.useState('public');
+  const namespaceMatch = useRouteMatch('/(listen|speak)/:namespace');
+  React.useEffect(() => {
+    if (namespaceMatch && namespaceMatch.params.namespace !== namespace) {
+      updateNamespace(namespaceMatch.params.namespace);
+    }
+  }, [namespaceMatch]);
 
   // render the most recent entries by default
   const [loadedEntries, updateLoadedEntries] = React.useState([]);
@@ -45,14 +53,20 @@ function App() {
     };
   }, [namespace]);
 
-  // Downloads new entry when route matches
-  // have to parse `entryId` out of routeMatch, because using
-  // `routeMatch` as the UseEffect() dependency triggers way too much
-  const routeMatch = useRouteMatch(`${APP_MODES.listen.pathname}/:entryId`);
-  let entryId;
-  if (routeMatch) {
-    entryId = routeMatch.params.entryId;
-  }
+  // Updates EntryId when route changes
+  const [entryId, updateEntryId] = React.useState(null);
+  const routeMatch = useRouteMatch(
+    `${APP_MODES.listen.pathname}/:namespace/:entryId`
+  );
+  React.useEffect(() => {
+    if (!routeMatch) {
+      updateEntryId(null);
+    } else if (routeMatch.params.entryId !== entryId) {
+      updateEntryId(routeMatch.params.entryId);
+    }
+  }, [routeMatch]);
+
+  // Downloads new entry when entryId changes
   const [isLoadingEntry, updateIsLoadingEntry] = React.useState(false);
   const [selectedEntry, updateSelectedEntry] = React.useState(null);
   React.useEffect(() => {
@@ -92,16 +106,19 @@ function App() {
           <Switch>
             <EntriesClientContext.Provider value={entriesClient}>
               <Grid.Container gap={2}>
-                {/* site root is pushed to listen route */}
+                {/* site root is pushed to public namespace */}
                 <Route exact path="/">
-                  <Redirect to={APP_MODES.listen.pathname} />
+                  <Redirect to={`${APP_MODES.listen.pathname}/public`} />
+                </Route>
+                <Route exact path="/listen">
+                  <Redirect to={`${APP_MODES.listen.pathname}/public`} />
                 </Route>
 
                 {/* save on map rendering by always rendering it, and adjusting render responsively */}
                 {/* on xs screens, map takes full width in speak mode, hides on click in read mode */}
                 {/* on sm screens, map takes half width in read/speak mode */}
                 <Route
-                  path="/(listen|speak)/:entryId?"
+                  path="/(listen|speak)/:namespace/:entryId?"
                   render={({ location, match }) => {
                     const isReading = match.params && match.params.entryId;
                     const isSpeaking =
@@ -109,6 +126,7 @@ function App() {
                     const selectedEntryCenter = selectedEntry
                       ? selectedEntry.location
                       : null;
+
                     return (
                       <Grid
                         xs={isReading ? 0 : 24}
@@ -127,7 +145,9 @@ function App() {
 
                 {/* on xs screens, reader takes full width */}
                 {/* on sm screens, reader takes right half width */}
-                <Route path={`${APP_MODES.listen.pathname}/:entryId`}>
+                <Route
+                  path={`${APP_MODES.listen.pathname}/:namespace/:entryId`}
+                >
                   <Grid xs={24} sm={12}>
                     <Reader entry={selectedEntry} isLoading={isLoadingEntry} />
                   </Grid>
@@ -135,7 +155,7 @@ function App() {
 
                 {/* editor slides under map on xs screens, half width on sm and larger */}
                 <Grid xs={24} sm={12}>
-                  <Route path={APP_MODES.speak.pathname}>
+                  <Route path={`${APP_MODES.speak.pathname}/:namespace`}>
                     <Writer entry={draftEntry} updateEntry={updateDraftEntry} />
                   </Route>
                 </Grid>
