@@ -24,12 +24,12 @@ function App() {
 
   // updates namespace, if necessary, on route change
   const [namespace, updateNamespace] = React.useState('public');
-  const namespaceMatch = useRouteMatch('/(listen|speak)/:namespace');
+  const namespaceMatch = useRouteMatch('/:mode/:namespace');
   React.useEffect(() => {
     if (namespaceMatch && namespaceMatch.params.namespace !== namespace) {
       updateNamespace(namespaceMatch.params.namespace);
     }
-  }, [namespaceMatch]);
+  }, [namespaceMatch]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // render the most recent entries by default
   const [loadedEntries, updateLoadedEntries] = React.useState([]);
@@ -64,7 +64,7 @@ function App() {
     } else if (routeMatch.params.entryId !== entryId) {
       updateEntryId(routeMatch.params.entryId);
     }
-  }, [routeMatch]);
+  }, [routeMatch]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Downloads new entry when entryId changes
   const [isLoadingEntry, updateIsLoadingEntry] = React.useState(false);
@@ -101,28 +101,28 @@ function App() {
   return (
     <>
       <Page size="large">
-        <NavBar />
+        <NavBar namespace={namespace} />
         <Page.Content>
           <Switch>
             <EntriesClientContext.Provider value={entriesClient}>
               <Grid.Container gap={2}>
                 {/* site root is pushed to public namespace */}
                 <Route exact path="/">
-                  <Redirect to={`${APP_MODES.listen.pathname}/public`} />
+                  <Redirect to={`${APP_MODES.listen.pathname}/${namespace}`} />
                 </Route>
-                <Route exact path="/listen">
-                  <Redirect to={`${APP_MODES.listen.pathname}/public`} />
+                <Route exact path={APP_MODES.listen.pathname}>
+                  <Redirect to={`${APP_MODES.listen.pathname}/${namespace}`} />
                 </Route>
 
                 {/* save on map rendering by always rendering it, and adjusting render responsively */}
                 {/* on xs screens, map takes full width in speak mode, hides on click in read mode */}
                 {/* on sm screens, map takes half width in read/speak mode */}
                 <Route
-                  path="/(listen|speak)/:namespace/:entryId?"
-                  render={({ location, match }) => {
-                    const isReading = match.params && match.params.entryId;
+                  path="/:mode/:namespace/:entryId?"
+                  render={({ match }) => {
+                    const isReading = match.params.entryId;
                     const isSpeaking =
-                      location.pathname === APP_MODES.speak.pathname;
+                      match.params.mode === APP_MODES.speak.name;
                     const selectedEntryCenter = selectedEntry
                       ? selectedEntry.location
                       : null;
@@ -133,7 +133,6 @@ function App() {
                         sm={isReading || isSpeaking ? 12 : 24}
                       >
                         <Map
-                          pathname={location.pathname}
                           layerData={loadedEntries}
                           updateEntryLocation={updateEntryLocation}
                           selectedEntryCenter={selectedEntryCenter}

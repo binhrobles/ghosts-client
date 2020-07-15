@@ -26,17 +26,12 @@ const getLastMarkerCoords = () => {
   return [entry.location.lng, entry.location.lat];
 };
 
-const Map = ({
-  pathname,
-  layerData,
-  selectedEntryCenter,
-  updateEntryLocation,
-}) => {
+const Map = ({ layerData, selectedEntryCenter, updateEntryLocation }) => {
   const [currentMarkerCoords, updateCurrentMarker] = React.useState(
     getLastMarkerCoords()
   );
   const history = useHistory();
-  const { namespace, entryId } = useParams();
+  const { mode, namespace, entryId } = useParams();
 
   // after mapbox finishes rendering, grab the map object reference
   const [globalMap, setGlobalMap] = React.useState(null);
@@ -44,7 +39,7 @@ const Map = ({
     setGlobalMap(_map);
   };
 
-  // on pathname change, triggers resize
+  // on mode change, triggers resize
   // prevents map from being stuck only rendered on half the screen
   React.useEffect(() => {
     if (globalMap) {
@@ -56,12 +51,12 @@ const Map = ({
         });
       }
     }
-  }, [globalMap, pathname, entryId, selectedEntryCenter]);
+  }, [globalMap, mode, entryId, selectedEntryCenter]);
 
-  // if in `create` mode, clicking map should leave marker
+  // if in `speak` mode, clicking map should leave marker
   // report coordinates to parent
   const onMapClicked = (_, event) => {
-    if (pathname === APP_MODES.speak.pathname) {
+    if (mode === APP_MODES.speak.name) {
       const wrappedCoords = event.lngLat.wrap();
       updateCurrentMarker([wrappedCoords.lng, wrappedCoords.lat]);
       updateEntryLocation({ ...wrappedCoords });
@@ -70,10 +65,8 @@ const Map = ({
 
   // fly/zoom to entry before calling parent function
   const handleFeatureClicked = (event) => {
-    if (pathname.includes(APP_MODES.listen.pathname)) {
-      history.push(
-        `${APP_MODES.listen.pathname}/${namespace}/${event.feature.properties.entryId}`
-      );
+    if (mode === APP_MODES.listen.name) {
+      history.push(`/${mode}/${namespace}/${event.feature.properties.entryId}`);
     }
   };
 
@@ -137,7 +130,6 @@ const Map = ({
 };
 
 Map.propTypes = {
-  pathname: PropTypes.string.isRequired,
   layerData: PropTypes.arrayOf(
     PropTypes.shape({
       _id: PropTypes.string,
