@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import { useHistory, useParams } from 'react-router-dom';
 import ReactMapboxGl, { Layer, Feature } from 'react-mapbox-gl';
 import Geocoder from './Geocoder';
-import { APP_MODES } from '../../common/constants';
-import config from '../../config';
+import { APP_MODES } from '../common/constants';
+import config from '../config';
 
 const Mapbox = ReactMapboxGl({
   accessToken: config.mapbox.publicAccessToken,

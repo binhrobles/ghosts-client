@@ -1,8 +1,7 @@
 import React from 'react';
 import { Grid, Page } from '@zeit-ui/react';
 import { Switch, Redirect, Route, useRouteMatch } from 'react-router-dom';
-import { About, Reader, Writer, Footer, NavBar } from './Components/index';
-import Map from './Components/common/Map';
+import { About, Reader, Map, Writer, Footer, NavBar } from './Components/index';
 import Entry from './common/Entry';
 import {
   CreateClient,
