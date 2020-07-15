@@ -53,7 +53,9 @@ const Reader = ({ entry, isLoading }) => {
         <Divider y={0} />
         <Card.Content>
           <p>We had some problems finding that...</p>
-          <p>Entry ID: {entryId}</p>
+          <p>
+            Entry: {namespace}/{entryId}
+          </p>
         </Card.Content>
       </>
     );
