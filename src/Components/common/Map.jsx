@@ -79,7 +79,7 @@ const Map = ({
 
   // when zoomed out, should use simple map
   // when zoomed in, should use satellite imagery
-  const onZoom = (_map) => {
+  const onZoomEnd = (_map) => {
     const zoom = _map.getZoom();
     if (
       zoom > config.mapbox.transitionZoom &&
@@ -110,7 +110,7 @@ const Map = ({
       center={config.mapbox.initialCenter}
       zoom={config.mapbox.initialZoom}
       onStyleLoad={onStyleLoad}
-      onZoom={onZoom}
+      onZoomEnd={onZoomEnd}
       onClick={onMapClicked}
       containerStyle={{
         height: '70vh',
