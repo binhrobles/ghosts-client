@@ -92,19 +92,3 @@ resource "aws_cloudfront_distribution" "frontend_cloudfront_distribution" {
     ssl_support_method  = "sni-only"
   }
 }
-
-/* ---- Route53 mapping ---- */
-resource "aws_route53_zone" "zone" {
-  name = var.application_domain_name
-}
-
-resource "aws_route53_record" "frontend_record" {
-  zone_id = aws_route53_zone.zone.zone_id
-  name    = var.application_domain_name
-  type    = "A"
-  alias {
-    name                   = aws_cloudfront_distribution.frontend_cloudfront_distribution.domain_name
-    zone_id                = aws_cloudfront_distribution.frontend_cloudfront_distribution.hosted_zone_id
-    evaluate_target_health = false
-  }
-}
