@@ -13,7 +13,7 @@ const NavBar = (props) => {
     history.push(path);
   };
 
-  const label = namespace === 'public' ? 'Shared Space' : namespace;
+  const label = namespace === 'public' ? 'Ghosts' : namespace;
   const listenPath = `${APP_MODES.listen.pathname}/${namespace}`;
   const speakPath = `${APP_MODES.speak.pathname}/${namespace}`;
 

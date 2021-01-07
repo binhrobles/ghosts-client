@@ -63,14 +63,6 @@ const Writer = ({ entry, updateEntry }) => {
         />
         <Spacer y={1} />
         <Editor entry={entry} updateEntry={updateEntry} />
-        <Spacer y={1} />
-        <Input
-          label="Left by"
-          size="small"
-          value={entry.submitter}
-          onChange={onAttributeChange('submitter')}
-          placeholder="anon"
-        />
         <Card.Footer>
           <Row style={{ width: '100%' }} justify="end">
             <Button
@@ -91,7 +83,6 @@ const Writer = ({ entry, updateEntry }) => {
 Writer.propTypes = {
   entry: PropTypes.shape({
     description: PropTypes.string,
-    submitter: PropTypes.string,
   }).isRequired,
   updateEntry: PropTypes.func.isRequired,
 };
