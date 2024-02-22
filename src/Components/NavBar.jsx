@@ -9,16 +9,12 @@ const NavBar = (props) => {
   const history = useHistory();
 
   const onChangeHandler = (path) => {
-    console.log(`pushing ${path}`);
     history.push(path);
   };
 
   const label = namespace === 'public' ? 'Ghosts' : namespace;
   const listenPath = `${APP_MODES.listen.pathname}/${namespace}`;
   const speakPath = `${APP_MODES.speak.pathname}/${namespace}`;
-
-  console.log(listenPath);
-  console.log(speakPath);
 
   const tabs = (
     <Tabs onChange={onChangeHandler} hideDivider>
