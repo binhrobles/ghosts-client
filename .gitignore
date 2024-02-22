@@ -12,7 +12,7 @@
 # Terraform
 *.tfstate
 *.tfstate*
-.terraform
+.terraform*
 
 # misc
 .DS_Store
