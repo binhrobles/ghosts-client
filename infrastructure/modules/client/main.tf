@@ -1,3 +1,14 @@
+terraform {
+  required_providers {
+    aws = {
+      source = "hashicorp/aws"
+      configuration_aliases = [
+        aws.virginia,
+      ]
+    }
+  }
+}
+
 /* ----- S3 resources ----- */
 resource "aws_s3_bucket" "s3_bucket" {
   bucket = var.application_domain_name
