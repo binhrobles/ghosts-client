@@ -2,12 +2,11 @@ const config = Object.freeze({
   baseURL:
     process.env.NODE_ENV === 'development'
       ? 'http://localhost:3001'
-      : 'https://ghosts-api.binhrobles.com',
+      : 'https://c2w0arf5zf.execute-api.us-east-1.amazonaws.com/production/',
   googleClientId: '',
   mapbox: {
     style: {
-      dark:
-        'mapbox://styles/binhrobles/ckbrgp26q1gdk1imt419e9bw8?optimize=true',
+      dark: 'mapbox://styles/binhrobles/ckbrgp26q1gdk1imt419e9bw8?optimize=true',
       satellite:
         'mapbox://styles/binhrobles/ckc9tdec23p3s1hn1c71nxh53?optimize=true',
     },
