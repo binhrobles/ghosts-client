@@ -1,17 +1,13 @@
-import { createContext } from 'react';
 import axios from 'axios';
 import handleError from '../common/handleError';
+import config from '../config';
 
-export const EntriesClientContext = createContext();
+const client = axios.create({
+  baseURL: config.baseURL,
+  // TODO: some auth method for API Gateway
+});
 
-export const CreateClient = (baseURL) => {
-  return axios.create({
-    baseURL,
-    // TODO: some auth method for API Gateway
-  });
-};
-
-export const CreateEntry = async ({ client, namespace, entry }) => {
+export const CreateEntry = async ({ namespace, entry }) => {
   try {
     await client.post(`namespace/${namespace}/entry`, entry);
     return true;
@@ -21,7 +17,7 @@ export const CreateEntry = async ({ client, namespace, entry }) => {
   }
 };
 
-export const GetEntryById = async ({ client, namespace, id }) => {
+export const GetEntryById = async ({ namespace, id }) => {
   try {
     const response = await client.get(`namespace/${namespace}/entry/${id}`);
     return response.data;
@@ -31,7 +27,7 @@ export const GetEntryById = async ({ client, namespace, id }) => {
   }
 };
 
-export const GetRecentEntries = async ({ client, namespace }) => {
+export const GetRecentEntries = async ({ namespace }) => {
   try {
     const response = await client.get(`namespace/${namespace}/entries`);
     return response.data;
@@ -39,4 +35,10 @@ export const GetRecentEntries = async ({ client, namespace }) => {
     handleError(e.response);
     return [];
   }
+};
+
+export default {
+  CreateEntry,
+  GetEntryById,
+  GetRecentEntries,
 };

@@ -3,23 +3,14 @@ import { Grid, Page } from '@zeit-ui/react';
 import { Switch, Redirect, Route, useRouteMatch } from 'react-router-dom';
 import { About, Reader, Map, Writer, Footer, NavBar } from './Components/index';
 import Entry from './common/Entry';
-import {
-  CreateClient,
-  GetRecentEntries,
-  GetEntryById,
-  EntriesClientContext,
-} from './Http/entries';
+import entriesClient from './Http/entries';
 import useObjectWithLocalStorage from './common/useObjectWithLocalStorage';
 import { APP_MODES } from './common/constants';
-import config from './config';
-
-let entriesClient = null;
 
 function App() {
   const [draftEntry, updateDraftEntry] = useObjectWithLocalStorage('entry');
 
   if (!draftEntry) updateDraftEntry(new Entry());
-  if (!entriesClient) entriesClient = CreateClient(config.baseURL);
 
   // updates namespace, if necessary, on route change
   const [namespace, updateNamespace] = React.useState('public');
@@ -38,8 +29,7 @@ function App() {
       // don't update the component's state if the
       // component is no longer mounted, indicated
       // by the clean up func having been called
-      const entries = await GetRecentEntries({
-        client: entriesClient,
+      const entries = await entriesClient.GetRecentEntries({
         namespace,
       });
 
@@ -76,8 +66,7 @@ function App() {
 
     // if so, download the selected entry
     (async () => {
-      const downloaded = await GetEntryById({
-        client: entriesClient,
+      const downloaded = await entriesClient.GetEntryById({
         namespace,
         id: entryId,
       });
@@ -103,66 +92,64 @@ function App() {
         <NavBar namespace={namespace} />
         <Page.Content>
           <Switch>
-            <EntriesClientContext.Provider value={entriesClient}>
-              <Grid.Container gap={2}>
-                {/* site root is pushed to public namespace */}
-                <Route exact path="/">
-                  <Redirect to={`${APP_MODES.listen.pathname}/${namespace}`} />
-                </Route>
-                <Route exact path={APP_MODES.listen.pathname}>
-                  <Redirect to={`${APP_MODES.listen.pathname}/${namespace}`} />
-                </Route>
-
-                {/* save on map rendering by always rendering it, and adjusting render responsively */}
-                {/* on xs screens, map takes full width in speak mode, hides on click in read mode */}
-                {/* on sm screens, map takes half width in read/speak mode */}
-                <Route
-                  path="/:mode/:namespace/:entryId?"
-                  render={({ match }) => {
-                    const isReading = match.params.entryId;
-                    const isSpeaking =
-                      match.params.mode === APP_MODES.speak.name;
-                    const selectedEntryCenter = selectedEntry
-                      ? selectedEntry.location
-                      : null;
-
-                    return (
-                      <Grid
-                        xs={isReading ? 0 : 24}
-                        sm={isReading || isSpeaking ? 12 : 24}
-                      >
-                        <Map
-                          layerData={loadedEntries}
-                          updateEntryLocation={updateEntryLocation}
-                          selectedEntryCenter={selectedEntryCenter}
-                        />
-                      </Grid>
-                    );
-                  }}
-                />
-
-                {/* on xs screens, reader takes full width */}
-                {/* on sm screens, reader takes right half width */}
-                <Route
-                  path={`${APP_MODES.listen.pathname}/:namespace/:entryId`}
-                >
-                  <Grid xs={24} sm={12}>
-                    <Reader entry={selectedEntry} isLoading={isLoadingEntry} />
-                  </Grid>
-                </Route>
-
-                {/* editor slides under map on xs screens, half width on sm and larger */}
-                <Grid xs={24} sm={12}>
-                  <Route path={`${APP_MODES.speak.pathname}/:namespace`}>
-                    <Writer entry={draftEntry} updateEntry={updateDraftEntry} />
-                  </Route>
-                </Grid>
-              </Grid.Container>
-
-              <Route path={APP_MODES.about.pathname}>
-                <About />
+            <Grid.Container gap={2}>
+              {/* site root is pushed to public namespace */}
+              <Route exact path="/">
+                <Redirect to={`${APP_MODES.listen.pathname}/${namespace}`} />
               </Route>
-            </EntriesClientContext.Provider>
+              <Route exact path={APP_MODES.listen.pathname}>
+                <Redirect to={`${APP_MODES.listen.pathname}/${namespace}`} />
+              </Route>
+
+              {/* save on map rendering by always rendering it, and adjusting render responsively */}
+              {/* on xs screens, map takes full width in speak mode, hides on click in read mode */}
+              {/* on sm screens, map takes half width in read/speak mode */}
+              <Route
+                path="/:mode/:namespace/:entryId?"
+                render={({ match }) => {
+                  const isReading = match.params.entryId;
+                  const isSpeaking =
+                    match.params.mode === APP_MODES.speak.name;
+                  const selectedEntryCenter = selectedEntry
+                    ? selectedEntry.location
+                    : null;
+
+                  return (
+                    <Grid
+                      xs={isReading ? 0 : 24}
+                      sm={isReading || isSpeaking ? 12 : 24}
+                    >
+                      <Map
+                        layerData={loadedEntries}
+                        updateEntryLocation={updateEntryLocation}
+                        selectedEntryCenter={selectedEntryCenter}
+                      />
+                    </Grid>
+                  );
+                }}
+              />
+
+              {/* on xs screens, reader takes full width */}
+              {/* on sm screens, reader takes right half width */}
+              <Route
+                path={`${APP_MODES.listen.pathname}/:namespace/:entryId`}
+              >
+                <Grid xs={24} sm={12}>
+                  <Reader entry={selectedEntry} isLoading={isLoadingEntry} />
+                </Grid>
+              </Route>
+
+              {/* editor slides under map on xs screens, half width on sm and larger */}
+              <Grid xs={24} sm={12}>
+                <Route path={`${APP_MODES.speak.pathname}/:namespace`}>
+                  <Writer entry={draftEntry} updateEntry={updateDraftEntry} />
+                </Route>
+              </Grid>
+            </Grid.Container>
+
+            <Route path={APP_MODES.about.pathname}>
+              <About />
+            </Route>
           </Switch>
         </Page.Content>
       </Page>

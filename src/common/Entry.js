@@ -12,7 +12,5 @@ export default function Entry() {
     lng: 0.0,
   };
   this.ttl = TTL.NEVER;
-  this.date = ''; // optional
   this.submitter = 'anon'; // optional
-  this.tags = []; // optional
 }
