@@ -5,6 +5,7 @@ import ReactMapboxGl, { Layer, Feature } from 'react-mapbox-gl';
 import Geocoder from './Geocoder';
 import { APP_MODES } from '../common/constants';
 import config from '../config';
+import { coordArrayFromLocation } from '../common/utils';
 
 const Mapbox = ReactMapboxGl({
   accessToken: config.mapbox.publicAccessToken,
@@ -23,7 +24,7 @@ const getLastMarkerCoords = () => {
   const storedEntry = sessionStorage.getItem('entry');
   if (!storedEntry) return null;
   const entry = JSON.parse(storedEntry);
-  return [entry.location.lng, entry.location.lat];
+  return entry.location;
 };
 
 const Map = ({ layerData, selectedEntryCenter, updateEntryLocation }) => {
@@ -58,8 +59,8 @@ const Map = ({ layerData, selectedEntryCenter, updateEntryLocation }) => {
   const onMapClicked = (_, event) => {
     if (mode === APP_MODES.speak.name) {
       const wrappedCoords = event.lngLat.wrap();
-      updateCurrentMarker([wrappedCoords.lng, wrappedCoords.lat]);
-      updateEntryLocation({ ...wrappedCoords });
+      updateCurrentMarker(wrappedCoords);
+      updateEntryLocation(wrappedCoords);
     }
   };
 
@@ -88,14 +89,16 @@ const Map = ({ layerData, selectedEntryCenter, updateEntryLocation }) => {
   };
 
   // properties will be passed to the handleFeatureClicked func
-  const features = layerData.map((point) => (
-    <Feature
-      key={point._id}
-      properties={{ entryId: point._id, location: point._source.location }}
-      coordinates={point._source.location}
-      onClick={handleFeatureClicked}
-    />
-  ));
+  const features = layerData.map(({ id, location}) => {
+    const coordArray = coordArrayFromLocation(location);
+    return (
+      <Feature
+        key={id}
+        properties={{ entryId: id, location: coordArray}}
+        coordinates={coordArray}
+        onClick={handleFeatureClicked}
+      />)
+  });
 
   return (
     <Mapbox
@@ -122,7 +125,7 @@ const Map = ({ layerData, selectedEntryCenter, updateEntryLocation }) => {
       {/* marker set for leaving a entry */}
       {currentMarkerCoords && (
         <Layer type="circle" paint={MarkerStyle}>
-          <Feature coordinates={currentMarkerCoords} />
+          <Feature coordinates={coordArrayFromLocation(currentMarkerCoords)} />
         </Layer>
       )}
     </Mapbox>
@@ -132,11 +135,18 @@ const Map = ({ layerData, selectedEntryCenter, updateEntryLocation }) => {
 Map.propTypes = {
   layerData: PropTypes.arrayOf(
     PropTypes.shape({
-      _id: PropTypes.string,
+      id: PropTypes.string,
+      location: PropTypes.shape({
+        lat: PropTypes.number,
+        lng: PropTypes.number,
+      })
     })
   ).isRequired,
   updateEntryLocation: PropTypes.func.isRequired,
-  selectedEntryCenter: PropTypes.arrayOf(PropTypes.number),
+  selectedEntryCenter: PropTypes.shape({
+    lat: PropTypes.number,
+    lng: PropTypes.number,
+  }).isRequired,
 };
 
 Map.defaultProps = {

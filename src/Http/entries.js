@@ -1,5 +1,5 @@
 import axios from 'axios';
-import handleError from '../common/handleError';
+import { handleError } from '../common/utils';
 import config from '../config';
 
 const client = axios.create({

@@ -77,7 +77,6 @@ Reader.propTypes = {
   entry: PropTypes.shape({
     text: PropTypes.string,
     description: PropTypes.string,
-    location: PropTypes.arrayOf(PropTypes.number),
   }),
   isLoading: PropTypes.bool.isRequired,
 };
