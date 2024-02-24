@@ -92,6 +92,10 @@ function App() {
         <NavBar namespace={namespace} />
         <Page.Content>
           <Switch>
+            <Route path={APP_MODES.about.pathname}>
+              <About />
+            </Route>
+
             <Grid.Container gap={2}>
               {/* site root is pushed to public namespace */}
               <Route exact path="/">
@@ -147,9 +151,6 @@ function App() {
               </Grid>
             </Grid.Container>
 
-            <Route path={APP_MODES.about.pathname}>
-              <About />
-            </Route>
           </Switch>
         </Page.Content>
       </Page>
