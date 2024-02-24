@@ -4,7 +4,6 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.bubble.css';
 import { useToasts } from '@zeit-ui/react';
 import './editor.css';
-import Entry from '../../common/Entry';
 import config from '../../config';
 
 const Editor = ({ entry, updateEntry }) => {
@@ -32,7 +31,9 @@ const Editor = ({ entry, updateEntry }) => {
 };
 
 Editor.propTypes = {
-  entry: PropTypes.instanceOf(Entry).isRequired,
+  entry: PropTypes.shape({
+    text: PropTypes.string,
+  }).isRequired,
   updateEntry: PropTypes.func.isRequired,
 };
 
