@@ -84,18 +84,11 @@ const Content = () => {
       </Grid>
 
       <Switch>
-        {/* on xs screens, reader takes full width */}
-        {/* on sm screens, reader takes right half width */}
+        {/* on xs screens, text takes full width */}
+        {/* on sm screens, text takes right half width */}
         <Grid className='text' xs={24} sm={12}>
-          <Route
-            path={`${APP_MODES.listen.pathname}/:entryId`}
-          >
-            <Reader entry={selectedEntry} isLoading={isLoadingEntry} />
-          </Route>
-
-          <Route path={APP_MODES.speak.pathname}>
-            <Writer entry={draftEntry} updateEntry={updateDraftEntry} />
-          </Route>
+          {isReading && <Reader entry={selectedEntry} isLoading={isLoadingEntry} />}
+          {isSpeaking && <Writer entry={draftEntry} updateEntry={updateDraftEntry} />}
         </Grid>
       </Switch>
     </>
