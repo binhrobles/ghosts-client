@@ -15,7 +15,7 @@ const Reader = ({ entry, isLoading }) => {
 
   // remove entryId route when closing readview
   const onClose = () => {
-    history.push(APP_MODES.listen.pathname);
+    history.push(`/${APP_MODES.LISTEN}`);
   };
 
   const loadingRender = (
