@@ -8,7 +8,7 @@ const NavBar = () => {
   const match = useRouteMatch('/:mode');
 
   const onChangeHandler = (path) => {
-    history.push(path);
+    history.push(`/${path}`);
   };
 
   const tabs = Object.keys(APP_MODES).map(mode =>
