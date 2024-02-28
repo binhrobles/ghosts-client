@@ -57,7 +57,7 @@ const Map = ({ layerData, selectedEntryCenter, updateEntryLocation }) => {
   // if in `speak` mode, clicking map should leave marker
   // report coordinates to parent
   const onMapClicked = (_, event) => {
-    if (mode === APP_MODES.speak.name) {
+    if (mode === APP_MODES.SPEAK) {
       const wrappedCoords = event.lngLat.wrap();
       updateCurrentMarker(wrappedCoords);
       updateEntryLocation(wrappedCoords);
@@ -66,7 +66,7 @@ const Map = ({ layerData, selectedEntryCenter, updateEntryLocation }) => {
 
   // fly/zoom to entry before calling parent function
   const handleFeatureClicked = (event) => {
-    if (mode === APP_MODES.listen.name) {
+    if (mode === APP_MODES.LISTEN) {
       history.push(`/${mode}/${event.feature.properties.entryId}`);
     }
   };

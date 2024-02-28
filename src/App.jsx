@@ -65,7 +65,7 @@ const Content = () => {
   }, [entryId]);
 
   const isReading = Boolean(entryId);
-  const isSpeaking = mode === APP_MODES.speak.name;
+  const isSpeaking = mode === APP_MODES.SPEAK;
 
   return (
     <>
@@ -101,14 +101,14 @@ const App = () => (
 
       <Page.Content>
         <Switch>
-          <Route path={APP_MODES.about.pathname}>
+          <Route path={`/${APP_MODES.ABOUT}`}>
             <About />
           </Route>
 
           <Grid.Container gap={2} justify="center">
             <Route exact path="/">
               {/* TODO: activate listen tab */}
-              <Redirect to={APP_MODES.listen.pathname} />
+              <Redirect to={`/${APP_MODES.LISTEN}`} />
             </Route>
 
             <Route path="/:mode/:entryId?">
