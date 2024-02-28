@@ -32,7 +32,7 @@ const Map = ({ layerData, selectedEntryCenter, updateEntryLocation }) => {
     getLastMarkerCoords()
   );
   const history = useHistory();
-  const { mode, namespace, entryId } = useParams();
+  const { mode, entryId } = useParams();
 
   // after mapbox finishes rendering, grab the map object reference
   const [globalMap, setGlobalMap] = React.useState(null);
@@ -67,7 +67,7 @@ const Map = ({ layerData, selectedEntryCenter, updateEntryLocation }) => {
   // fly/zoom to entry before calling parent function
   const handleFeatureClicked = (event) => {
     if (mode === APP_MODES.listen.name) {
-      history.push(`/${mode}/${namespace}/${event.feature.properties.entryId}`);
+      history.push(`/${mode}/${event.feature.properties.entryId}`);
     }
   };
 
@@ -146,7 +146,7 @@ Map.propTypes = {
   selectedEntryCenter: PropTypes.shape({
     lat: PropTypes.number,
     lng: PropTypes.number,
-  }).isRequired,
+  }),
 };
 
 Map.defaultProps = {

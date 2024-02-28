@@ -1,19 +1,21 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useParams, useHistory } from 'react-router-dom';
+import { Button, Card, Divider, Row, Loading } from '@zeit-ui/react';
 import ReactQuill from 'react-quill';
+
 import 'react-quill/dist/quill.bubble.css';
 import './reader.css';
-import { Button, Card, Divider, Row, Loading } from '@zeit-ui/react';
+
 import { APP_MODES } from '../common/constants';
 
 const Reader = ({ entry, isLoading }) => {
-  const { namespace, entryId } = useParams();
+  const { entryId } = useParams();
   const history = useHistory();
 
   // remove entryId route when closing readview
   const onClose = () => {
-    history.push(`${APP_MODES.listen.pathname}/${namespace}`);
+    history.push(APP_MODES.listen.pathname);
   };
 
   const loadingRender = (
@@ -54,7 +56,7 @@ const Reader = ({ entry, isLoading }) => {
         <Card.Content>
           <p>We had some problems finding that...</p>
           <p>
-            Entry: {namespace}/{entryId}
+            Entry: {entryId}
           </p>
         </Card.Content>
       </>

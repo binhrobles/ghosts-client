@@ -1,25 +1,19 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import { Page, Row, Tabs, Text } from '@zeit-ui/react';
 import { APP_MODES } from '../common/constants';
 
-const NavBar = (props) => {
-  const { namespace } = props;
+const NavBar = () => {
   const history = useHistory();
 
   const onChangeHandler = (path) => {
     history.push(path);
   };
 
-  const label = namespace === 'public' ? 'Ghosts' : namespace;
-  const listenPath = `${APP_MODES.listen.pathname}/${namespace}`;
-  const speakPath = `${APP_MODES.speak.pathname}/${namespace}`;
-
   const tabs = (
     <Tabs onChange={onChangeHandler} hideDivider>
-      <Tabs.Item label={APP_MODES.listen.name} value={listenPath} />
-      <Tabs.Item label={APP_MODES.speak.name} value={speakPath} />
+      <Tabs.Item label={APP_MODES.listen.name} value={APP_MODES.listen.pathname} />
+      <Tabs.Item label={APP_MODES.speak.name} value={APP_MODES.speak.pathname} />
       <Tabs.Item
         label={APP_MODES.about.name}
         value={APP_MODES.about.pathname}
@@ -31,14 +25,10 @@ const NavBar = (props) => {
     <Page.Header>
       <Row justify="space-between">
         {tabs}
-        <Text h4>{label}</Text>
+        <Text h4>Ghosts</Text>
       </Row>
     </Page.Header>
   );
-};
-
-NavBar.propTypes = {
-  namespace: PropTypes.string.isRequired,
 };
 
 export default NavBar;

@@ -7,9 +7,9 @@ const client = axios.create({
   // TODO: some auth method for API Gateway
 });
 
-export const CreateEntry = async ({ namespace, entry }) => {
+export const CreateEntry = async ({ entry }) => {
   try {
-    await client.post(`namespace/${namespace}/entry`, entry);
+    await client.post(`namespace/public/entry`, entry);
     return true;
   } catch (e) {
     handleError(e.response);
@@ -17,9 +17,9 @@ export const CreateEntry = async ({ namespace, entry }) => {
   }
 };
 
-export const GetEntryById = async ({ namespace, id }) => {
+export const GetEntryById = async ({ id }) => {
   try {
-    const response = await client.get(`namespace/${namespace}/entry/${id}`);
+    const response = await client.get(`namespace/public/entry/${id}`);
     return response.data;
   } catch (e) {
     handleError(e.response);
@@ -27,9 +27,9 @@ export const GetEntryById = async ({ namespace, id }) => {
   }
 };
 
-export const GetRecentEntries = async ({ namespace }) => {
+export const GetRecentEntries = async () => {
   try {
-    const response = await client.get(`namespace/${namespace}/entries`);
+    const response = await client.get(`namespace/public/entries`);
     return response.data;
   } catch (e) {
     handleError(e.response);

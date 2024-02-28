@@ -12,15 +12,6 @@ function App() {
 
   if (!draftEntry) updateDraftEntry(new Entry());
 
-  // updates namespace, if necessary, on route change
-  const [namespace, updateNamespace] = React.useState('public');
-  const namespaceMatch = useRouteMatch('/:mode/:namespace');
-  React.useEffect(() => {
-    if (namespaceMatch && namespaceMatch.params.namespace !== namespace) {
-      updateNamespace(namespaceMatch.params.namespace);
-    }
-  }, [namespaceMatch]); // eslint-disable-line react-hooks/exhaustive-deps
-
   // render the most recent entries by default
   const [loadedEntries, updateLoadedEntries] = React.useState([]);
   React.useEffect(() => {
@@ -29,9 +20,7 @@ function App() {
       // don't update the component's state if the
       // component is no longer mounted, indicated
       // by the clean up func having been called
-      const entries = await entriesClient.GetRecentEntries({
-        namespace,
-      });
+      const entries = await entriesClient.GetRecentEntries();
 
       if (isMounted) {
         updateLoadedEntries(entries);
@@ -40,18 +29,20 @@ function App() {
     return () => {
       isMounted = false;
     };
-  }, [namespace]);
+  }, []);
 
   // Updates EntryId when route changes
+  // TODO: Built in React Router way of doing this?? seems like rework
   const [entryId, updateEntryId] = React.useState(null);
-  const routeMatch = useRouteMatch(
-    `${APP_MODES.listen.pathname}/:namespace/:entryId`
-  );
+
+  const routeMatch = useRouteMatch('/listen/:entryId');
   React.useEffect(() => {
     if (!routeMatch) {
       updateEntryId(null);
-    } else if (routeMatch.params.entryId !== entryId) {
-      updateEntryId(routeMatch.params.entryId);
+    } else {
+      if (routeMatch.params.entryId !== entryId) {
+        updateEntryId(routeMatch.params.entryId);
+      }
     }
   }, [routeMatch]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -66,8 +57,8 @@ function App() {
 
     // if so, download the selected entry
     (async () => {
+      console.log(`fetching ${entryId}`);
       const downloaded = await entriesClient.GetEntryById({
-        namespace,
         id: entryId,
       });
 
@@ -80,7 +71,7 @@ function App() {
     return () => {
       isMounted = false;
     };
-  }, [entryId, namespace]);
+  }, [entryId]);
 
   const updateEntryLocation = ({ lng, lat }) => {
     updateDraftEntry((prev) => ({ ...prev, location: { lng, lat } }));
@@ -89,7 +80,7 @@ function App() {
   return (
     <>
       <Page size="large">
-        <NavBar namespace={namespace} />
+        <NavBar />
         <Page.Content>
           <Switch>
             <Route path={APP_MODES.about.pathname}>
@@ -97,58 +88,56 @@ function App() {
             </Route>
 
             <Grid.Container gap={2}>
-              {/* site root is pushed to public namespace */}
               <Route exact path="/">
-                <Redirect to={`${APP_MODES.listen.pathname}/${namespace}`} />
-              </Route>
-              <Route exact path={APP_MODES.listen.pathname}>
-                <Redirect to={`${APP_MODES.listen.pathname}/${namespace}`} />
+                {/* TODO: activate listen tab */}
+                <Redirect to={APP_MODES.listen.pathname} />
               </Route>
 
               {/* save on map rendering by always rendering it, and adjusting render responsively */}
               {/* on xs screens, map takes full width in speak mode, hides on click in read mode */}
               {/* on sm screens, map takes half width in read/speak mode */}
               <Route
-                path="/:mode/:namespace/:entryId?"
+                path="/:mode/:entryId?"
                 render={({ match }) => {
-                  const isReading = match.params.entryId;
+                  const isReading = Boolean(match.params.entryId);
                   const isSpeaking =
                     match.params.mode === APP_MODES.speak.name;
-                  const selectedEntryCenter = selectedEntry
-                    ? selectedEntry.location
-                    : null;
+
+                  // TODO: if entryId, download entryId
 
                   return (
-                    <Grid
-                      xs={isReading ? 0 : 24}
-                      sm={isReading || isSpeaking ? 12 : 24}
-                    >
-                      <Map
-                        layerData={loadedEntries}
-                        updateEntryLocation={updateEntryLocation}
-                        selectedEntryCenter={selectedEntryCenter}
-                      />
-                    </Grid>
+                    <>
+                      <Grid
+                        className='map'
+                        sm={isReading || isSpeaking ? 12 : 24}
+                      >
+                        <Map
+                          layerData={loadedEntries}
+                          updateEntryLocation={updateEntryLocation}
+                          selectedEntryCenter={selectedEntry?.location}
+                        />
+                      </Grid>
+
+                      <Switch>
+                        {/* on xs screens, reader takes full width */}
+                        {/* on sm screens, reader takes right half width */}
+                        <Grid className='text' xs={24} sm={12}>
+                          <Route
+                            path={`${APP_MODES.listen.pathname}/:entryId`}
+                          >
+                            <Reader entry={selectedEntry} isLoading={isLoadingEntry} />
+                          </Route>
+
+                          <Route path={APP_MODES.speak.pathname}>
+                            <Writer entry={draftEntry} updateEntry={updateDraftEntry} />
+                          </Route>
+                        </Grid>
+                      </Switch>
+                    </>
                   );
                 }}
               />
 
-              {/* on xs screens, reader takes full width */}
-              {/* on sm screens, reader takes right half width */}
-              <Route
-                path={`${APP_MODES.listen.pathname}/:namespace/:entryId`}
-              >
-                <Grid xs={24} sm={12}>
-                  <Reader entry={selectedEntry} isLoading={isLoadingEntry} />
-                </Grid>
-              </Route>
-
-              {/* editor slides under map on xs screens, half width on sm and larger */}
-              <Grid xs={24} sm={12}>
-                <Route path={`${APP_MODES.speak.pathname}/:namespace`}>
-                  <Writer entry={draftEntry} updateEntry={updateDraftEntry} />
-                </Route>
-              </Grid>
             </Grid.Container>
 
           </Switch>
