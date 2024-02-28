@@ -74,6 +74,7 @@ const Content = () => {
       {/* on sm screens, map takes half width in read/speak mode */}
       <Grid
         className='map'
+        xs={isReading ? false : 24}
         sm={isReading || isSpeaking ? 12 : 24}
       >
         <Map
@@ -83,14 +84,12 @@ const Content = () => {
         />
       </Grid>
 
-      <Switch>
-        {/* on xs screens, text takes full width */}
-        {/* on sm screens, text takes right half width */}
-        <Grid className='text' xs={24} sm={12}>
-          {isReading && <Reader entry={selectedEntry} isLoading={isLoadingEntry} />}
-          {isSpeaking && <Writer entry={draftEntry} updateEntry={updateDraftEntry} />}
-        </Grid>
-      </Switch>
+      {/* on xs screens, text takes full width */}
+      {/* on sm screens, text takes right half width */}
+      <Grid className='text' xs={24} sm={12}>
+        {isReading && <Reader entry={selectedEntry} isLoading={isLoadingEntry} />}
+        {isSpeaking && <Writer entry={draftEntry} updateEntry={updateDraftEntry} />}
+      </Grid>
     </>
   );
 };
@@ -106,7 +105,7 @@ const App = () => (
             <About />
           </Route>
 
-          <Grid.Container gap={2}>
+          <Grid.Container gap={2} justify="center">
             <Route exact path="/">
               {/* TODO: activate listen tab */}
               <Redirect to={APP_MODES.listen.pathname} />
