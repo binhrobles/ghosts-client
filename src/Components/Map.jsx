@@ -127,7 +127,7 @@ const Map = ({ layerData, updateEntryLocation }) => {
       }}
     >
       {/* search bar */}
-      {/* <Geocoder /> */}
+      { mode === APP_MODES.SPEAK && <Geocoder /> }
 
       {/* existing entries */}
       <Source type='geojson' data={entries}>

@@ -4,14 +4,15 @@ import config from '../config';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 
 const Geocoder = () => {
-  useControl(() => {
-    const ctrl = new MapboxGeocoder({
+  useControl(() =>
+    new MapboxGeocoder({
       accessToken: config.mapbox.publicAccessToken,
-    });
-    return ctrl;
-  }, {
-    position: 'top-left'
-  });
+    }), {
+      position: 'top-left'
+    }
+  );
+
+  return null;
 };
 
 export default Geocoder;
