@@ -1,4 +1,4 @@
-const config = Object.freeze({
+export default Object.freeze({
   baseURL:
     process.env.NODE_ENV === 'development'
       ? 'http://localhost:3001'
@@ -11,10 +11,13 @@ const config = Object.freeze({
         'mapbox://styles/binhrobles/ckc9tdec23p3s1hn1c71nxh53?optimize=true',
     },
     publicAccessToken: process.env.REACT_APP_MAPBOX_PUBLIC_ACCESS_TOKEN,
-    initialCenter: [-100.6, 23.22],
+    initialViewState: {
+      longitude: -100.6,
+      latitude: 23.22,
+      zoom: 0.85,
+    },
     minZoom: 0.9,
     transitionZoom: 14,
-    initialZoom: [0.85],
   },
   maxFieldLength: {
     // somewhat arbitrary, but my About page, in HTML, about 3 times
@@ -26,5 +29,3 @@ const config = Object.freeze({
     tags: 50,
   },
 });
-
-export default config;

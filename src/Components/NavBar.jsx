@@ -12,7 +12,7 @@ const NavBar = () => {
   };
 
   const tabs = Object.keys(APP_MODES).map(mode =>
-    <Tabs.Item label={APP_MODES[mode]} value={APP_MODES[mode]} />
+    <Tabs.Item key={APP_MODES[mode]} label={APP_MODES[mode]} value={APP_MODES[mode]} />
   );
 
   return (

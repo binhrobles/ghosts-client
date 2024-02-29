@@ -1,16 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useHistory, useParams } from 'react-router-dom';
-import ReactMapboxGl, { Layer, Feature } from 'react-mapbox-gl';
+import ReactMapGL, { Source, Layer } from 'react-map-gl';
 import Geocoder from './Geocoder';
 import { APP_MODES } from '../common/constants';
 import config from '../config';
 import { coordArrayFromLocation } from '../common/utils';
-
-const Mapbox = ReactMapboxGl({
-  accessToken: config.mapbox.publicAccessToken,
-  minZoom: config.mapbox.minZoom,
-});
 
 const MarkerStyle = {
   'circle-color': '#FFFFFF',
@@ -18,6 +13,12 @@ const MarkerStyle = {
   'circle-opacity': 0.95,
   'circle-radius': 10,
 };
+
+const EntryLayer = {
+  id: 'entries',
+  type: 'circle',
+  paint: MarkerStyle,
+}
 
 // if there's a draft entry in localstorage, retrieve it and put it on the map
 const getLastMarkerCoords = () => {
@@ -27,108 +28,119 @@ const getLastMarkerCoords = () => {
   return entry.location;
 };
 
-const Map = ({ layerData, selectedEntryCenter, updateEntryLocation }) => {
-  const [currentMarkerCoords, updateCurrentMarker] = React.useState(
-    getLastMarkerCoords()
-  );
+const Map = ({ layerData, updateEntryLocation }) => {
   const history = useHistory();
   const { mode, entryId } = useParams();
 
+  // draft entry marker
+  const [currentMarkerCoords, updateCurrentMarker] = React.useState(
+    getLastMarkerCoords()
+  );
+
+  const currentEntry = entryId ? layerData.find((entry) => entry.id === entryId) : null;
+
   // after mapbox finishes rendering, grab the map object reference
   const [globalMap, setGlobalMap] = React.useState(null);
-  const onStyleLoad = (_map) => {
-    setGlobalMap(_map);
+  const onStyleData = (event) => {
+    setGlobalMap(event.target);
   };
 
-  // on mode change, triggers resize
+  // on mode / entryId change, triggers resize
   // prevents map from being stuck only rendered on half the screen
   React.useEffect(() => {
     if (globalMap) {
       globalMap.resize();
-      if (entryId && selectedEntryCenter) {
-        globalMap.flyTo({
-          center: selectedEntryCenter,
-          zoom: 17,
-        });
-      }
     }
-  }, [globalMap, mode, entryId, selectedEntryCenter]);
+  }, [globalMap, mode, entryId]);
+
+  const onResize = (event) => {
+    if (currentEntry) {
+      console.log(`resize: flying to ${currentEntry.id}`);
+      event.target.flyTo({
+        center: currentEntry.location,
+        zoom: 16,
+      });
+    }
+  };
 
   // if in `speak` mode, clicking map should leave marker
   // report coordinates to parent
-  const onMapClicked = (_, event) => {
-    if (mode === APP_MODES.SPEAK) {
+  const onMapClicked = (event) => {
+    if (mode === APP_MODES.LISTEN && event.features && event.features[0]) {
+      history.push(`/${mode}/${event.features[0].properties.entryId}`);
+    } else if (mode === APP_MODES.SPEAK) {
       const wrappedCoords = event.lngLat.wrap();
       updateCurrentMarker(wrappedCoords);
       updateEntryLocation(wrappedCoords);
     }
   };
 
-  // fly/zoom to entry before calling parent function
-  const handleFeatureClicked = (event) => {
-    if (mode === APP_MODES.LISTEN) {
-      history.push(`/${mode}/${event.feature.properties.entryId}`);
-    }
-  };
-
   // when zoomed out, should use simple map
   // when zoomed in, should use satellite imagery
-  const onZoomEnd = (_map) => {
-    const zoom = _map.getZoom();
+  const onZoomEnd = (event) => {
+    console.log('zoom end')
+    const zoom = event.target.getZoom();
     if (
       zoom > config.mapbox.transitionZoom &&
-      _map.style !== config.mapbox.style.satellite
+      event.target.style !== config.mapbox.style.satellite
     ) {
-      _map.setStyle(config.mapbox.style.satellite);
+      event.target.setStyle(config.mapbox.style.satellite);
     } else if (
       zoom <= config.mapbox.transitionZoom &&
-      _map.style !== config.mapbox.style.dark
+      event.target.style !== config.mapbox.style.dark
     ) {
-      _map.setStyle(config.mapbox.style.dark);
+      event.target.setStyle(config.mapbox.style.dark);
     }
   };
 
-  // properties will be passed to the handleFeatureClicked func
-  const features = layerData.map(({ id, location}) => {
-    const coordArray = coordArrayFromLocation(location);
-    return (
-      <Feature
-        key={id}
-        properties={{ entryId: id, location: coordArray}}
-        coordinates={coordArray}
-        onClick={handleFeatureClicked}
-      />)
-  });
+  // properties will be passed to the handleEntryClicked func
+  // TODO: pull this layerData into an updating GeoJSON document?
+  // TOOD: reconcile differing data structures bw layerData and entries
+  const entries = {
+    type: 'FeatureCollection',
+    features: layerData.map(({ id, location}) => {
+      return {
+        type: 'Feature',
+        geometry: {
+          type: 'Point',
+          coordinates: coordArrayFromLocation(location),
+        },
+        properties: { entryId: id },
+      };
+    }),
+  };
 
   return (
-    <Mapbox
-      style={config.mapbox.style.dark}
-      center={config.mapbox.initialCenter}
-      zoom={config.mapbox.initialZoom}
-      onStyleLoad={onStyleLoad}
+    <ReactMapGL
+      mapboxAccessToken={config.mapbox.publicAccessToken}
+      initialViewState={config.mapbox.initialViewState}
+      minZoom={config.mapbox.minZoom}
+      reuseMaps={true}
+      mapStyle={config.mapbox.style.dark}
+      onStyleData={onStyleData}
+      onResize={onResize}
       onZoomEnd={onZoomEnd}
       onClick={onMapClicked}
-      containerStyle={{
+      interactiveLayerIds={[EntryLayer.id]}
+      style={{
         height: '70vh',
-        width: '100%',
-        borderRadius: '2%',
       }}
     >
       {/* search bar */}
-      <Geocoder />
+      {/* <Geocoder /> */}
 
       {/* existing entries */}
-      <Layer type="circle" paint={MarkerStyle}>
-        {features}
-      </Layer>
+      <Source type='geojson' data={entries}>
+        <Layer {...EntryLayer} />
+      </Source>
 
       {/* marker set for leaving a entry */}
-      {currentMarkerCoords && (
+      {/* {currentMarkerCoords && (
         <Layer type="circle" paint={MarkerStyle}>
           <Feature coordinates={coordArrayFromLocation(currentMarkerCoords)} />
         </Layer>
-      )}
-    </Mapbox>
+      )} */}
+    </ReactMapGL>
   );
 };
 
@@ -143,14 +155,9 @@ Map.propTypes = {
     })
   ).isRequired,
   updateEntryLocation: PropTypes.func.isRequired,
-  selectedEntryCenter: PropTypes.shape({
-    lat: PropTypes.number,
-    lng: PropTypes.number,
-  }),
 };
 
 Map.defaultProps = {
-  selectedEntryCenter: null,
 };
 
 export default Map;

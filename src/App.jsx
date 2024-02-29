@@ -64,6 +64,7 @@ const Content = () => {
     };
   }, [entryId]);
 
+  // Content visibility controls
   const isReading = Boolean(entryId);
   const isSpeaking = mode === APP_MODES.SPEAK;
 
@@ -80,7 +81,6 @@ const Content = () => {
         <Map
           layerData={loadedEntries}
           updateEntryLocation={updateEntryLocation}
-          selectedEntryCenter={selectedEntry?.location}
         />
       </Grid>
 
