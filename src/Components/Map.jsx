@@ -98,7 +98,7 @@ const Map = ({ layerData, updateEntryLocation }) => {
 
   // properties will be passed to the handleEntryClicked func
   // TODO: pull this layerData into an updating GeoJSON document?
-  // TOOD: reconcile differing data structures bw layerData and entries
+  // TODO: reconcile differing data structures bw layerData and entries
   const entries = {
     type: 'FeatureCollection',
     features: layerData.map(({ id, location }) => {
