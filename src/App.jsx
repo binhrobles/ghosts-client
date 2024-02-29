@@ -48,7 +48,6 @@ const Content = () => {
 
     // if so, download the selected entry
     (async () => {
-      console.log(`fetching ${entryId}`);
       const downloaded = await entriesClient.GetEntryById({
         id: entryId,
       });
@@ -107,7 +106,6 @@ const App = () => (
 
           <Grid.Container gap={2} justify="center">
             <Route exact path="/">
-              {/* TODO: activate listen tab */}
               <Redirect to={`/${APP_MODES.LISTEN}`} />
             </Route>
 

@@ -7,6 +7,8 @@ import { APP_MODES } from '../common/constants';
 import config from '../config';
 import { coordArrayFromLocation } from '../common/utils';
 
+import 'mapbox-gl/dist/mapbox-gl.css';
+
 const MarkerStyle = {
   'circle-color': '#FFFFFF',
   'circle-blur': 0.7,
@@ -50,18 +52,16 @@ const Map = ({ layerData, updateEntryLocation }) => {
   React.useEffect(() => {
     if (globalMap) {
       globalMap.resize();
-    }
-  }, [globalMap, mode, entryId]);
 
-  const onResize = (event) => {
-    if (currentEntry) {
-      console.log(`resize: flying to ${currentEntry.id}`);
-      event.target.flyTo({
-        center: currentEntry.location,
-        zoom: 16,
-      });
+      if (currentEntry) {
+        globalMap.flyTo({
+          center: currentEntry.location,
+          zoom: 16,
+        });
+      }
     }
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [globalMap, mode, entryId]);
 
   // if in `speak` mode, clicking map should leave marker
   // report coordinates to parent
@@ -77,8 +77,8 @@ const Map = ({ layerData, updateEntryLocation }) => {
 
   // when zoomed out, should use simple map
   // when zoomed in, should use satellite imagery
+  // TODO: is there a smoother / more gradual way to do this?
   const onZoomEnd = (event) => {
-    console.log('zoom end')
     const zoom = event.target.getZoom();
     if (
       zoom > config.mapbox.transitionZoom &&
@@ -118,12 +118,12 @@ const Map = ({ layerData, updateEntryLocation }) => {
       reuseMaps={true}
       mapStyle={config.mapbox.style.dark}
       onStyleData={onStyleData}
-      onResize={onResize}
       onZoomEnd={onZoomEnd}
       onClick={onMapClicked}
       interactiveLayerIds={[EntryLayer.id]}
       style={{
         height: '70vh',
+        borderRadius: '2%',
       }}
     >
       {/* search bar */}
@@ -155,9 +155,6 @@ Map.propTypes = {
     })
   ).isRequired,
   updateEntryLocation: PropTypes.func.isRequired,
-};
-
-Map.defaultProps = {
 };
 
 export default Map;

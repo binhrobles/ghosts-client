@@ -3,7 +3,6 @@ export default Object.freeze({
     process.env.NODE_ENV === 'development'
       ? 'http://localhost:3001'
       : 'https://ghosts-api.binhrobles.com',
-  googleClientId: '',
   mapbox: {
     style: {
       dark: 'mapbox://styles/binhrobles/ckbrgp26q1gdk1imt419e9bw8?optimize=true',
