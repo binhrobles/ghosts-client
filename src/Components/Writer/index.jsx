@@ -39,7 +39,7 @@ const Writer = ({ entry, updateEntry }) => {
       updateEntry(new Entry());
 
       // redirect back to home
-      history.push(APP_MODES.listen.pathname);
+      history.push(`/${APP_MODES.LISTEN}`);
     } else {
       setToast({
         type: 'error',
