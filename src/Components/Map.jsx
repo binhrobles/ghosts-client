@@ -17,10 +17,9 @@ const MarkerStyle = {
 };
 
 const EntryLayer = {
-  id: 'entries',
   type: 'circle',
   paint: MarkerStyle,
-}
+};
 
 // if there's a draft entry in localstorage, retrieve it and put it on the map
 const getLastMarkerCoords = () => {
@@ -35,11 +34,12 @@ const Map = ({ layerData, updateEntryLocation }) => {
   const { mode, entryId } = useParams();
 
   // draft entry marker
-  const [currentMarkerCoords, updateCurrentMarker] = React.useState(
+  const [draftMarkerCoords, updateDraftMarker] = React.useState(
     getLastMarkerCoords()
   );
 
-  const currentEntry = entryId ? layerData.find((entry) => entry.id === entryId) : null;
+  const selectedEntry =
+    entryId && layerData.find((entry) => entry.id === entryId);
 
   // after mapbox finishes rendering, grab the map object reference
   const [globalMap, setGlobalMap] = React.useState(null);
@@ -53,9 +53,9 @@ const Map = ({ layerData, updateEntryLocation }) => {
     if (globalMap) {
       globalMap.resize();
 
-      if (currentEntry) {
+      if (selectedEntry) {
         globalMap.flyTo({
-          center: currentEntry.location,
+          center: selectedEntry.location,
           zoom: 16,
         });
       }
@@ -63,14 +63,17 @@ const Map = ({ layerData, updateEntryLocation }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [globalMap, mode, entryId]);
 
-  // if in `speak` mode, clicking map should leave marker
-  // report coordinates to parent
   const onMapClicked = (event) => {
+    // if in `listen` mode, clicking map should navigate to entry
     if (mode === APP_MODES.LISTEN && event.features && event.features[0]) {
       history.push(`/${mode}/${event.features[0].properties.entryId}`);
     } else if (mode === APP_MODES.SPEAK) {
+      // if in `speak` mode, clicking map should leave marker
+      // and report coordinates to parent state
+      console.log('clicked', event.lngLat.wrap());
+
       const wrappedCoords = event.lngLat.wrap();
-      updateCurrentMarker(wrappedCoords);
+      updateDraftMarker(wrappedCoords);
       updateEntryLocation(wrappedCoords);
     }
   };
@@ -98,7 +101,7 @@ const Map = ({ layerData, updateEntryLocation }) => {
   // TOOD: reconcile differing data structures bw layerData and entries
   const entries = {
     type: 'FeatureCollection',
-    features: layerData.map(({ id, location}) => {
+    features: layerData.map(({ id, location }) => {
       return {
         type: 'Feature',
         geometry: {
@@ -108,6 +111,14 @@ const Map = ({ layerData, updateEntryLocation }) => {
         properties: { entryId: id },
       };
     }),
+  };
+
+  const draft = draftMarkerCoords && {
+    type: 'Feature',
+    geometry: {
+      type: 'Point',
+      coordinates: coordArrayFromLocation(draftMarkerCoords),
+    },
   };
 
   return (
@@ -120,26 +131,26 @@ const Map = ({ layerData, updateEntryLocation }) => {
       onStyleData={onStyleData}
       onZoomEnd={onZoomEnd}
       onClick={onMapClicked}
-      interactiveLayerIds={[EntryLayer.id]}
+      interactiveLayerIds={['entries']}
       style={{
         height: '70vh',
         borderRadius: '2%',
       }}
     >
       {/* search bar */}
-      { mode === APP_MODES.SPEAK && <Geocoder /> }
+      {mode === APP_MODES.SPEAK && <Geocoder />}
 
       {/* existing entries */}
-      <Source type='geojson' data={entries}>
-        <Layer {...EntryLayer} />
+      <Source id="entry-source" type="geojson" data={entries}>
+        <Layer id="entries" {...EntryLayer} />
       </Source>
 
       {/* marker set for leaving a entry */}
-      {/* {currentMarkerCoords && (
-        <Layer type="circle" paint={MarkerStyle}>
-          <Feature coordinates={coordArrayFromLocation(currentMarkerCoords)} />
-        </Layer>
-      )} */}
+      {draftMarkerCoords && mode === APP_MODES.SPEAK && (
+        <Source id="draft-source" type="geojson" data={draft}>
+          <Layer id="draft" {...EntryLayer} />
+        </Source>
+      )}
     </ReactMapGL>
   );
 };
@@ -151,7 +162,7 @@ Map.propTypes = {
       location: PropTypes.shape({
         lat: PropTypes.number,
         lng: PropTypes.number,
-      })
+      }),
     })
   ).isRequired,
   updateEntryLocation: PropTypes.func.isRequired,
