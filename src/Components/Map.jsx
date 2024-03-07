@@ -66,7 +66,7 @@ const Map = ({ layerData, updateEntryLocation }) => {
   const onMapClicked = (event) => {
     // if in `listen` mode, clicking map should navigate to entry
     if (mode === APP_MODES.LISTEN && event.features && event.features[0]) {
-      history.push(`/${mode}/${event.features[0].properties.entryId}`);
+      history.push(`/${mode}/${event.features[0].properties.id}`);
     } else if (mode === APP_MODES.SPEAK) {
       // if in `speak` mode, clicking map should leave marker
       // and report coordinates to parent state
@@ -108,7 +108,7 @@ const Map = ({ layerData, updateEntryLocation }) => {
           type: 'Point',
           coordinates: coordArrayFromLocation(location),
         },
-        properties: { entryId: id },
+        properties: { id },
       };
     }),
   };
