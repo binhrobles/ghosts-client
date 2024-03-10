@@ -3,6 +3,10 @@ export default Object.freeze({
     process.env.NODE_ENV === 'development'
       ? 'http://localhost:3001'
       : 'https://ghosts-api.binhrobles.com',
+  entriesIndexURL:
+    process.env.NODE_ENV === 'development'
+      ? 'http://localhost:3001/index'
+      : 'https://ghosts-entries-production.s3.amazonaws.com/index.geojson',
   mapbox: {
     style: {
       dark: 'mapbox://styles/binhrobles/ckbrgp26q1gdk1imt419e9bw8?optimize=true',

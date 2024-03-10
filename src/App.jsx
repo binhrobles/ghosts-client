@@ -10,18 +10,20 @@ import { APP_MODES } from './common/constants';
 const Content = () => {
   const { mode, entryId } = useParams();
 
-  // render the most recent entries by default
-  const [loadedEntries, updateLoadedEntries] = React.useState([]);
+  const [entriesIndex, updateEntriesIndex] = React.useState({
+    type: 'FeatureCollection',
+    features: [],
+  });
   React.useEffect(() => {
     let isMounted = true;
     (async () => {
       // don't update the component's state if the
       // component is no longer mounted, indicated
       // by the clean up func having been called
-      const entries = await entriesClient.GetRecentEntries();
+      const entries = await entriesClient.GetEntries();
 
       if (isMounted) {
-        updateLoadedEntries(entries);
+        updateEntriesIndex(entries);
       }
     })();
     return () => {
@@ -73,21 +75,25 @@ const Content = () => {
       {/* on xs screens, map takes full width in speak mode, hides on click in read mode */}
       {/* on sm screens, map takes half width in read/speak mode */}
       <Grid
-        className='map'
+        className="map"
         xs={isReading ? false : 24}
         sm={isReading || isSpeaking ? 12 : 24}
       >
         <Map
-          layerData={loadedEntries}
+          entriesIndex={entriesIndex}
           updateEntryLocation={updateEntryLocation}
         />
       </Grid>
 
       {/* on xs screens, text takes full width */}
       {/* on sm screens, text takes right half width */}
-      <Grid className='text' xs={24} sm={12}>
-        {isReading && <Reader entry={selectedEntry} isLoading={isLoadingEntry} />}
-        {isSpeaking && <Writer entry={draftEntry} updateEntry={updateDraftEntry} />}
+      <Grid className="text" xs={24} sm={12}>
+        {isReading && (
+          <Reader entry={selectedEntry} isLoading={isLoadingEntry} />
+        )}
+        {isSpeaking && (
+          <Writer entry={draftEntry} updateEntry={updateDraftEntry} />
+        )}
       </Grid>
     </>
   );

@@ -29,7 +29,7 @@ const getLastMarkerCoords = () => {
   return entry.location;
 };
 
-const Map = ({ layerData, updateEntryLocation }) => {
+const Map = ({ entriesIndex, updateEntryLocation }) => {
   const history = useHistory();
   const { mode, entryId } = useParams();
 
@@ -39,7 +39,8 @@ const Map = ({ layerData, updateEntryLocation }) => {
   );
 
   const selectedEntry =
-    entryId && layerData.find((entry) => entry.id === entryId);
+    entryId &&
+    entriesIndex.features.find((feature) => feature.properties.id === entryId);
 
   // after mapbox finishes rendering, grab the map object reference
   const [globalMap, setGlobalMap] = React.useState(null);
@@ -55,7 +56,7 @@ const Map = ({ layerData, updateEntryLocation }) => {
 
       if (selectedEntry) {
         globalMap.flyTo({
-          center: selectedEntry.location,
+          center: selectedEntry.geometry.coordinates,
           zoom: 16,
         });
       }
@@ -96,23 +97,6 @@ const Map = ({ layerData, updateEntryLocation }) => {
     }
   };
 
-  // properties will be passed to the handleEntryClicked func
-  // TODO: pull this layerData into an updating GeoJSON document?
-  // TODO: reconcile differing data structures bw layerData and entries
-  const entries = {
-    type: 'FeatureCollection',
-    features: layerData.map(({ id, location }) => {
-      return {
-        type: 'Feature',
-        geometry: {
-          type: 'Point',
-          coordinates: coordArrayFromLocation(location),
-        },
-        properties: { id },
-      };
-    }),
-  };
-
   const draft = draftMarkerCoords && {
     type: 'Feature',
     geometry: {
@@ -141,7 +125,7 @@ const Map = ({ layerData, updateEntryLocation }) => {
       {mode === APP_MODES.SPEAK && <Geocoder />}
 
       {/* existing entries */}
-      <Source id="entry-source" type="geojson" data={entries}>
+      <Source id="entry-source" type="geojson" data={entriesIndex}>
         <Layer id="entries" {...EntryLayer} />
       </Source>
 
@@ -156,15 +140,18 @@ const Map = ({ layerData, updateEntryLocation }) => {
 };
 
 Map.propTypes = {
-  layerData: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.string,
-      location: PropTypes.shape({
-        lat: PropTypes.number,
-        lng: PropTypes.number,
-      }),
-    })
-  ).isRequired,
+  entriesIndex: PropTypes.shape({
+    features: PropTypes.arrayOf(
+      PropTypes.shape({
+        properties: PropTypes.shape({
+          id: PropTypes.string,
+        }),
+        geometry: PropTypes.shape({
+          coordinates: PropTypes.array,
+        }),
+      })
+    ),
+  }).isRequired,
   updateEntryLocation: PropTypes.func.isRequired,
 };
 

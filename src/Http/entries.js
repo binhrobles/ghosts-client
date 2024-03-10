@@ -27,9 +27,9 @@ export const GetEntryById = async ({ id }) => {
   }
 };
 
-export const GetRecentEntries = async () => {
+export const GetEntries = async () => {
   try {
-    const response = await client.get(`namespace/public/entries`);
+    const response = await axios.get(config.entriesIndexURL);
     return response.data;
   } catch (e) {
     handleError(e.response);
@@ -40,5 +40,5 @@ export const GetRecentEntries = async () => {
 export default {
   CreateEntry,
   GetEntryById,
-  GetRecentEntries,
+  GetEntries,
 };

@@ -36,5 +36,62 @@
         "lat": 34.44136520185029
       }
     }
-  ]
+  ],
+  "index": {
+    "type": "FeatureCollection",
+    "features": [
+      {
+        "type": "Feature",
+        "properties": {
+          "id": "knj9_hK8u"
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            -82.7516545177445,
+            9.656416447253832
+          ]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "id": "ixdyOEVyv"
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            -117.50308793737383,
+            34.14962315931574
+          ]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "id": "57MuypJ1n"
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            -122.43531158282423,
+            37.77162415805637
+          ]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "id": "Zom1ZCf_5"
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            -0.2795982762454514,
+            51.56110235570296
+          ]
+        }
+      }
+    ]
+  }
 }
