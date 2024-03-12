@@ -2,3 +2,13 @@
 .ql-editor.ql-blank::before {
   color: #888888;
 }
+
+.quill {
+  height: 54vh;
+  overflow: 'auto';
+}
+
+.ql-container {
+  border: unset;
+  padding: unset;
+}

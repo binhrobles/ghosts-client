@@ -38,9 +38,9 @@ const Writer = ({ entry, updateEntry }) => {
         <Editor entry={entry} updateEntry={updateEntry} />
         <Card.Footer>
           <Row style={{ width: '100%' }} justify="end">
-            {/* TODO: disabled if !text || !location */}
             <Button
               auto
+              disabled={!(entry && entry.location && entry.text)}
               type="secondary"
               loading={isSubmitting}
               onClick={onSubmit}

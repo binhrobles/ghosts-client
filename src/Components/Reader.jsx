@@ -31,23 +31,12 @@ const Reader = ({ entry, isLoading }) => {
   const entryRender =
     entry && entry.text ? (
       <>
-        <Card.Content>{entry.description}</Card.Content>
-        <Divider y={0} />
-        <div
-          style={{
-            paddingTop: '5%',
-            maxHeight: '50vh',
-            overflow: 'auto',
-            WebkitOverflowScrolling: 'touch',
-          }}
-        >
-          <ReactQuill
-            theme="bubble"
-            preserveWhitespace
-            value={entry.text}
-            readOnly
-          />
-        </div>
+        <ReactQuill
+          theme="bubble"
+          preserveWhitespace
+          value={entry.text}
+          readOnly
+        />
       </>
     ) : (
       <>
@@ -55,15 +44,17 @@ const Reader = ({ entry, isLoading }) => {
         <Divider y={0} />
         <Card.Content>
           <p>We had some problems finding that...</p>
-          <p>
-            Entry: {entryId}
-          </p>
+          <p>Entry: {entryId}</p>
         </Card.Content>
       </>
     );
 
   return (
-    <Card>
+    <Card
+      style={{
+        height: '70vh',
+      }}
+    >
       {isLoading && loadingRender}
       {isLoading || entryRender}
       <Card.Footer>

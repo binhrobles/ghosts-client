@@ -8,6 +8,11 @@ import { APP_MODES } from './common/constants';
 
 const Content = () => {
   const { mode, entryId } = useParams();
+  const [draftEntry, updateDraftEntry] = useObjectWithLocalStorage('entry');
+
+  // Content visibility controls
+  const isReading = Boolean(entryId);
+  const isSpeaking = mode === APP_MODES.SPEAK;
 
   // download Entries GeoJSON on page load
   const [entriesIndex, updateEntriesIndex] = React.useState({
@@ -30,9 +35,6 @@ const Content = () => {
       isMounted = false;
     };
   }, []);
-
-  // maintain entry draft data
-  const [draftEntry, updateDraftEntry] = useObjectWithLocalStorage('entry');
 
   // Downloads new entry when entryId changes
   const [isLoadingEntry, updateIsLoadingEntry] = React.useState(false);
@@ -59,10 +61,6 @@ const Content = () => {
       isMounted = false;
     };
   }, [entryId]);
-
-  // Content visibility controls
-  const isReading = Boolean(entryId);
-  const isSpeaking = mode === APP_MODES.SPEAK;
 
   return (
     <>
