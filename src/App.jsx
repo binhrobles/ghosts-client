@@ -2,7 +2,6 @@ import React from 'react';
 import { Grid, Page } from '@zeit-ui/react';
 import { Switch, Redirect, Route, useParams } from 'react-router-dom';
 import { About, Reader, Map, Writer, Footer, NavBar } from './Components/index';
-import Entry from './common/Entry';
 import entriesClient from './Http/entries';
 import useObjectWithLocalStorage from './common/useObjectWithLocalStorage';
 import { APP_MODES } from './common/constants';
@@ -10,6 +9,7 @@ import { APP_MODES } from './common/constants';
 const Content = () => {
   const { mode, entryId } = useParams();
 
+  // download Entries GeoJSON on page load
   const [entriesIndex, updateEntriesIndex] = React.useState({
     type: 'FeatureCollection',
     features: [],
@@ -33,11 +33,6 @@ const Content = () => {
 
   // maintain entry draft data
   const [draftEntry, updateDraftEntry] = useObjectWithLocalStorage('entry');
-  if (!draftEntry) updateDraftEntry(new Entry());
-
-  const updateEntryLocation = ({ lng, lat }) => {
-    updateDraftEntry((prev) => ({ ...prev, location: { lng, lat } }));
-  };
 
   // Downloads new entry when entryId changes
   const [isLoadingEntry, updateIsLoadingEntry] = React.useState(false);
@@ -81,7 +76,8 @@ const Content = () => {
       >
         <Map
           entriesIndex={entriesIndex}
-          updateEntryLocation={updateEntryLocation}
+          draftEntry={draftEntry}
+          updateDraftEntry={updateDraftEntry}
         />
       </Grid>
 

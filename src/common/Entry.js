@@ -1,16 +1,8 @@
-export const TTL = Object.freeze({
-  WEEK: 7,
-  MONTH: 30,
-  NEVER: -1,
-});
-
 export default function Entry() {
   this.text = '';
-  this.description = '';
+  this.description = ''; // TODO: nuke
   this.location = {
     lat: 0.0,
     lng: 0.0,
   };
-  this.ttl = TTL.NEVER;
-  this.submitter = 'anon'; // optional
 }

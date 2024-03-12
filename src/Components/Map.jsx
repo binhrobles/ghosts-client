@@ -21,22 +21,9 @@ const EntryLayer = {
   paint: MarkerStyle,
 };
 
-// if there's a draft entry in localstorage, retrieve it and put it on the map
-const getLastMarkerCoords = () => {
-  const storedEntry = sessionStorage.getItem('entry');
-  if (!storedEntry) return null;
-  const entry = JSON.parse(storedEntry);
-  return entry.location;
-};
-
-const Map = ({ entriesIndex, updateEntryLocation }) => {
+const Map = ({ entriesIndex, draftEntry, updateDraftEntry }) => {
   const history = useHistory();
   const { mode, entryId } = useParams();
-
-  // draft entry marker
-  const [draftMarkerCoords, updateDraftMarker] = React.useState(
-    getLastMarkerCoords()
-  );
 
   const selectedEntry =
     entryId &&
@@ -73,9 +60,10 @@ const Map = ({ entriesIndex, updateEntryLocation }) => {
       // and report coordinates to parent state
       console.log('clicked', event.lngLat.wrap());
 
-      const wrappedCoords = event.lngLat.wrap();
-      updateDraftMarker(wrappedCoords);
-      updateEntryLocation(wrappedCoords);
+      updateDraftEntry((prev) => ({
+        ...prev,
+        location: { ...event.lngLat.wrap() },
+      }));
     }
   };
 
@@ -97,13 +85,14 @@ const Map = ({ entriesIndex, updateEntryLocation }) => {
     }
   };
 
-  const draft = draftMarkerCoords && {
-    type: 'Feature',
-    geometry: {
-      type: 'Point',
-      coordinates: coordArrayFromLocation(draftMarkerCoords),
-    },
-  };
+  const draftFeature = draftEntry &&
+    draftEntry.location && {
+      type: 'Feature',
+      geometry: {
+        type: 'Point',
+        coordinates: coordArrayFromLocation(draftEntry.location),
+      },
+    };
 
   return (
     <ReactMapGL
@@ -130,8 +119,8 @@ const Map = ({ entriesIndex, updateEntryLocation }) => {
       </Source>
 
       {/* marker set for leaving a entry */}
-      {draftMarkerCoords && mode === APP_MODES.SPEAK && (
-        <Source id="draft-source" type="geojson" data={draft}>
+      {draftEntry && draftEntry.location && mode === APP_MODES.SPEAK && (
+        <Source id="draft-source" type="geojson" data={draftFeature}>
           <Layer id="draft" {...EntryLayer} />
         </Source>
       )}
@@ -152,7 +141,10 @@ Map.propTypes = {
       })
     ),
   }).isRequired,
-  updateEntryLocation: PropTypes.func.isRequired,
+  draftEntry: PropTypes.shape({
+    text: PropTypes.string,
+  }).isRequired,
+  updateDraftEntry: PropTypes.func.isRequired,
 };
 
 export default Map;
