@@ -81,14 +81,19 @@ const Content = () => {
 
       {/* on xs screens, text takes full width */}
       {/* on sm screens, text takes right half width */}
-      <Grid className="text" xs={24} sm={12}>
-        {isReading && (
+      {isReading && (
+        <Grid className="text" xs={24} sm={12}>
           <Reader entry={selectedEntry} isLoading={isLoadingEntry} />
-        )}
-        {isSpeaking && (
+        </Grid>
+      )}
+
+      {/* on xs screens, disabled */}
+      {/* on sm screens, text takes right half width */}
+      {isSpeaking && (
+        <Grid className="text" xs={false} sm={12}>
           <Writer entry={draftEntry} updateEntry={updateDraftEntry} />
-        )}
-      </Grid>
+        </Grid>
+      )}
     </>
   );
 };
@@ -104,7 +109,7 @@ const App = () => (
             <About />
           </Route>
 
-          <Grid.Container gap={2} justify="center">
+          <Grid.Container gap={2} justify="center" style={{ height: '70vh' }}>
             <Route exact path="/">
               <Redirect to={`/${APP_MODES.LISTEN}`} />
             </Route>

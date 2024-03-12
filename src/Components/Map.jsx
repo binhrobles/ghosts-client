@@ -106,7 +106,7 @@ const Map = ({ entriesIndex, draftEntry, updateDraftEntry }) => {
       onClick={onMapClicked}
       interactiveLayerIds={['entries']}
       style={{
-        height: '70vh',
+        height: '100%',
         borderRadius: '2%',
       }}
     >

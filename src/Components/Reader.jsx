@@ -1,7 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useParams, useHistory } from 'react-router-dom';
-import { Button, Card, Divider, Row, Loading } from '@zeit-ui/react';
+import {
+  Button,
+  Card,
+  Divider,
+  Row,
+  Loading,
+  useMediaQuery,
+} from '@zeit-ui/react';
 import ReactQuill from 'react-quill';
 
 import 'react-quill/dist/quill.bubble.css';
@@ -12,6 +19,7 @@ import { APP_MODES } from '../common/constants';
 const Reader = ({ entry, isLoading }) => {
   const { entryId } = useParams();
   const history = useHistory();
+  const isXS = useMediaQuery('xs');
 
   // remove entryId route when closing readview
   const onClose = () => {
@@ -59,7 +67,7 @@ const Reader = ({ entry, isLoading }) => {
       {isLoading || entryRender}
       <Card.Footer>
         <Row style={{ width: '100%' }} justify="center">
-          <Button onClick={onClose}>Close</Button>
+          <Button onClick={onClose}>{isXS ? 'Back to Map' : 'Close'}</Button>
         </Row>
       </Card.Footer>
     </Card>
